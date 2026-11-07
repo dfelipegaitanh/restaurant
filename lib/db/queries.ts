@@ -489,11 +489,13 @@ export async function createOrderAtomic(params: CreateOrderParams): Promise<Crea
       });
     }
 
-    // Update table status to OCCUPIED
-    await tx.query(
-      `UPDATE restaurant_tables SET status = 'OCCUPIED', updated_at = NOW() WHERE id = $1`,
-      [params.table_id]
-    );
+    // Update table status to OCCUPIED only if it's a physical table (not the kiosk)
+    if (params.table_id !== 'table-kiosk') {
+      await tx.query(
+        `UPDATE restaurant_tables SET status = 'OCCUPIED', updated_at = NOW() WHERE id = $1`,
+        [params.table_id]
+      );
+    }
 
     const fullOrder: OrderSummary = {
       id: orderRow.id,

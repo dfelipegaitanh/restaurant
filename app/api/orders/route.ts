@@ -17,20 +17,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { table_id, idempotency_key, items } = body;
+    const { idempotency_key, items } = body;
+    const table_id = body.table_id || 'table-kiosk';
 
     // 1. Validate idempotency_key UUID
     if (!idempotency_key || !UUID_REGEX.test(idempotency_key)) {
       return NextResponse.json(
         { success: false, error: 'Invalid or missing idempotency_key UUID v4' },
-        { status: 400 }
-      );
-    }
-
-    // 2. Validate table_id
-    if (!table_id || typeof table_id !== 'string') {
-      return NextResponse.json(
-        { success: false, error: 'table_id is required' },
         { status: 400 }
       );
     }
@@ -75,13 +68,15 @@ export async function POST(request: Request) {
       },
     });
 
-    eventHub.broadcast({
-      type: 'TABLE_STATUS_CHANGED',
-      payload: {
-        table_id,
-        status: 'OCCUPIED',
-      },
-    });
+    if (table_id !== 'table-kiosk') {
+      eventHub.broadcast({
+        type: 'TABLE_STATUS_CHANGED',
+        payload: {
+          table_id,
+          status: 'OCCUPIED',
+        },
+      });
+    }
 
     return NextResponse.json(
       {
