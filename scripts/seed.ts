@@ -85,7 +85,7 @@ async function seed() {
       name: 'El Callejero Monumental',
       description: 'Salchicha americana ahumada jumbo en pan brioche largo, queso mozzarella gratinado, tocineta en cubos, lluvia dorada de papa fosforito, salsa tártara, salsa de piña calada y salsa rosada clásica.',
       base_price: 12.50,
-      image_url: '🌭',
+      image_url: '/images/products/callejero-monumental.jpeg',
     },
     {
       id: 'choricero-santarrosano',
@@ -93,7 +93,7 @@ async function seed() {
       name: 'El Choricero Santarrosano',
       description: 'Chorizo santarrosano artesanal abierto a la parrilla, guacamole rústico con limón mandarino, pico de gallo campesino, papa ripio crocante y suero costeño.',
       base_price: 14.00,
-      image_url: '🔥',
+      image_url: '/images/products/choricero-santarrosano.jpeg',
     },
     {
       id: 'sucio-desmechado',
@@ -101,7 +101,7 @@ async function seed() {
       name: 'El Sucio Desmechado',
       description: 'Salchicha americana, sobrebarriga braseada desmechada en hogao criollo tradicional, doble queso gratinado, huevos de codorniz cocidos al punto y salsa casera de ajo y cilantro.',
       base_price: 15.50,
-      image_url: '🥩',
+      image_url: '/images/products/sucio-desmechado.jpeg',
     },
     {
       id: 'maicito-gratinado',
@@ -109,7 +109,7 @@ async function seed() {
       name: 'El Maicito Gratinado Dog',
       description: 'Salchicha americana envuelta en tocineta a la plancha, baño espeso de maíz dulce tierno en crema de queso, papa fosforito y queso costeño rallado por encima.',
       base_price: 14.50,
-      image_url: '🌽',
+      image_url: '/images/products/maicito-gratinado.jpeg',
     },
     {
       id: 'butifarra-queso',
@@ -117,7 +117,7 @@ async function seed() {
       name: 'El Butifarra & Queso Dog',
       description: 'Salchicha americana combinada con trozos salteados de butifarra de Soledad marinada en limón, cebolla morada curtida, papa ripio y salsa verde de aguacate.',
       base_price: 14.50,
-      image_url: '🌭',
+      image_url: '/images/products/butifarra-queso.jpeg',
     },
 
     // 🍟 Salchipapas Monumentales

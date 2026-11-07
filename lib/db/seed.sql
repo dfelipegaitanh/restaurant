@@ -27,11 +27,11 @@ INSERT INTO products (id, category_id, name, description, base_price, image_url,
 ('pollo-crispy-andina', 'burgers', 'La Pollo Crispy Andina', 'Suprema de pechuga frita extra crocante marinada en suero y especias, coleslaw criollo con toques de manzana verde, mayonesa de cilantro y pepinillos agridulces.', 17.50, '/images/products/pollo-crispy-andina.jpeg', true),
 
 -- Perros Calientes
-('callejero-monumental', 'dogs', 'El Callejero Monumental', 'Salchicha americana ahumada jumbo en pan brioche largo, queso mozzarella gratinado, tocineta en cubos, lluvia dorada de papa fosforito, salsa tártara, salsa de piña calada y salsa rosada clásica.', 12.50, '🌭', true),
-('choricero-santarrosano', 'dogs', 'El Choricero Santarrosano', 'Chorizo santarrosano artesanal abierto a la parrilla, guacamole rústico con limón mandarino, pico de gallo campesino, papa ripio crocante y suero costeño.', 14.00, '🔥', true),
-('sucio-desmechado', 'dogs', 'El Sucio Desmechado', 'Salchicha americana, sobrebarriga braseada desmechada en hogao criollo tradicional, doble queso gratinado, huevos de codorniz cocidos al punto y salsa casera de ajo y cilantro.', 15.50, '🥩', true),
-('maicito-gratinado', 'dogs', 'El Maicito Gratinado Dog', 'Salchicha americana envuelta en tocineta a la plancha, baño espeso de maíz dulce tierno en crema de queso, papa fosforito y queso costeño rallado por encima.', 14.50, '🌽', true),
-('butifarra-queso', 'dogs', 'El Butifarra & Queso Dog', 'Salchicha americana combinada con trozos salteados de butifarra de Soledad marinada en limón, cebolla morada curtida, papa ripio y salsa verde de aguacate.', 14.50, '🌭', true),
+('callejero-monumental', 'dogs', 'El Callejero Monumental', 'Salchicha americana ahumada jumbo en pan brioche largo, queso mozzarella gratinado, tocineta en cubos, lluvia dorada de papa fosforito, salsa tártara, salsa de piña calada y salsa rosada clásica.', 12.50, '/images/products/callejero-monumental.jpeg', true),
+('choricero-santarrosano', 'dogs', 'El Choricero Santarrosano', 'Chorizo santarrosano artesanal abierto a la parrilla, guacamole rústico con limón mandarino, pico de gallo campesino, papa ripio crocante y suero costeño.', 14.00, '/images/products/choricero-santarrosano.jpeg', true),
+('sucio-desmechado', 'dogs', 'El Sucio Desmechado', 'Salchicha americana, sobrebarriga braseada desmechada en hogao criollo tradicional, doble queso gratinado, huevos de codorniz cocidos al punto y salsa casera de ajo y cilantro.', 15.50, '/images/products/sucio-desmechado.jpeg', true),
+('maicito-gratinado', 'dogs', 'El Maicito Gratinado Dog', 'Salchicha americana envuelta en tocineta a la plancha, baño espeso de maíz dulce tierno en crema de queso, papa fosforito y queso costeño rallado por encima.', 14.50, '/images/products/maicito-gratinado.jpeg', true),
+('butifarra-queso', 'dogs', 'El Butifarra & Queso Dog', 'Salchicha americana combinada con trozos salteados de butifarra de Soledad marinada en limón, cebolla morada curtida, papa ripio y salsa verde de aguacate.', 14.50, '/images/products/butifarra-queso.jpeg', true),
 
 -- Salchipapas
 ('salchipapa-clasica', 'salchipapas', 'Salchipapa Clásica Bogotana', 'Cama generosa de papas rústicas en cascos, salchicha americana en rodajas doradas, queso mozzarella fundido derretido al soplete y lluvia de salsa tártara y piña.', 13.50, '🍟', true),
