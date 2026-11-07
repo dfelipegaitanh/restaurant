@@ -127,7 +127,7 @@ async function seed() {
       name: 'Salchipapa Clásica Bogotana',
       description: 'Cama generosa de papas rústicas en cascos, salchicha americana en rodajas doradas, queso mozzarella fundido derretido al soplete y lluvia de salsa tártara y piña.',
       base_price: 13.50,
-      image_url: '🍟',
+      image_url: '/images/products/salchipapa-clasica.jpeg',
     },
     {
       id: 'salchipapa-bestia',
@@ -135,7 +135,7 @@ async function seed() {
       name: 'Salchipapa La Bestia Costeña',
       description: 'Papas rústicas, salchicha americana, butifarra frita en cuartos, sobrebarriga desmechada al hogao, cubos dorados de queso costeño frito y chorro generoso de suero.',
       base_price: 19.50,
-      image_url: '👑',
+      image_url: '/images/products/salchipapa-bestia.jpeg',
     },
     {
       id: 'salchipapa-chicharronera',
@@ -143,7 +143,7 @@ async function seed() {
       name: 'Salchipapa Chicharronera Criolla',
       description: 'Base mixta de papa criolla frita y papas rústicas, 150g de trozos de chicharrón tostado con limón, salchicha ahumada, hogao caliente y queso campesino gratinado.',
       base_price: 21.50,
-      image_url: '🥓',
+      image_url: '/images/products/salchipapa-chicharronera.jpeg',
     },
     {
       id: 'salchipapa-maicitos',
@@ -151,7 +151,7 @@ async function seed() {
       name: 'Salchipapa Maicitos & Bacon Lovers',
       description: 'Papas rústicas, salchicha americana dorada, tocineta crocante picada, maíz dulce salteado a la mantequilla y baño de salsa de cuatro quesos fundidos.',
       base_price: 17.50,
-      image_url: '🧀',
+      image_url: '/images/products/salchipapa-maicitos.jpeg',
     },
     {
       id: 'salchipapa-guajira',
@@ -159,7 +159,7 @@ async function seed() {
       name: 'Salchipapa Picante Guajira',
       description: 'Papas rústicas, salchicha tipo kielbasa picante, chicharrón, guacamole criollo, ají dulce ahumado, cebolla morada encurtida y queso costeño.',
       base_price: 18.50,
-      image_url: '🌶️',
+      image_url: '/images/products/salchipapa-guajira.jpeg',
     },
 
     // 🥔 Acompañamientos & Entradas Rápidas

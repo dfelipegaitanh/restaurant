@@ -34,11 +34,11 @@ INSERT INTO products (id, category_id, name, description, base_price, image_url,
 ('butifarra-queso', 'dogs', 'El Butifarra & Queso Dog', 'Salchicha americana combinada con trozos salteados de butifarra de Soledad marinada en limón, cebolla morada curtida, papa ripio y salsa verde de aguacate.', 14.50, '/images/products/butifarra-queso.jpeg', true),
 
 -- Salchipapas
-('salchipapa-clasica', 'salchipapas', 'Salchipapa Clásica Bogotana', 'Cama generosa de papas rústicas en cascos, salchicha americana en rodajas doradas, queso mozzarella fundido derretido al soplete y lluvia de salsa tártara y piña.', 13.50, '🍟', true),
-('salchipapa-bestia', 'salchipapas', 'Salchipapa La Bestia Costeña', 'Papas rústicas, salchicha americana, butifarra frita en cuartos, sobrebarriga desmechada al hogao, cubos dorados de queso costeño frito y chorro generoso de suero.', 19.50, '👑', true),
-('salchipapa-chicharronera', 'salchipapas', 'Salchipapa Chicharronera Criolla', 'Base mixta de papa criolla frita y papas rústicas, 150g de trozos de chicharrón tostado con limón, salchicha ahumada, hogao caliente y queso campesino gratinado.', 21.50, '🥓', true),
-('salchipapa-maicitos', 'salchipapas', 'Salchipapa Maicitos & Bacon Lovers', 'Papas rústicas, salchicha americana dorada, tocineta crocante picada, maíz dulce salteado a la mantequilla y baño de salsa de cuatro quesos fundidos.', 17.50, '🧀', true),
-('salchipapa-guajira', 'salchipapas', 'Salchipapa Picante Guajira', 'Papas rústicas, salchicha tipo kielbasa picante, chicharrón, guacamole criollo, ají dulce ahumado, cebolla morada encurtida y queso costeño.', 18.50, '🌶️', true),
+('salchipapa-clasica', 'salchipapas', 'Salchipapa Clásica Bogotana', 'Cama generosa de papas rústicas en cascos, salchicha americana en rodajas doradas, queso mozzarella fundido derretido al soplete y lluvia de salsa tártara y piña.', 13.50, '/images/products/salchipapa-clasica.jpeg', true),
+('salchipapa-bestia', 'salchipapas', 'Salchipapa La Bestia Costeña', 'Papas rústicas, salchicha americana, butifarra frita en cuartos, sobrebarriga desmechada al hogao, cubos dorados de queso costeño frito y chorro generoso de suero.', 19.50, '/images/products/salchipapa-bestia.jpeg', true),
+('salchipapa-chicharronera', 'salchipapas', 'Salchipapa Chicharronera Criolla', 'Base mixta de papa criolla frita y papas rústicas, 150g de trozos de chicharrón tostado con limón, salchicha ahumada, hogao caliente y queso campesino gratinado.', 21.50, '/images/products/salchipapa-chicharronera.jpeg', true),
+('salchipapa-maicitos', 'salchipapas', 'Salchipapa Maicitos & Bacon Lovers', 'Papas rústicas, salchicha americana dorada, tocineta crocante picada, maíz dulce salteado a la mantequilla y baño de salsa de cuatro quesos fundidos.', 17.50, '/images/products/salchipapa-maicitos.jpeg', true),
+('salchipapa-guajira', 'salchipapas', 'Salchipapa Picante Guajira', 'Papas rústicas, salchicha tipo kielbasa picante, chicharrón, guacamole criollo, ají dulce ahumado, cebolla morada encurtida y queso costeño.', 18.50, '/images/products/salchipapa-guajira.jpeg', true),
 
 -- Acompañamientos
 ('papas-rusticas', 'sides', 'Papas Rústicas de la Casa (Estándar)', 'Papas cortadas en gajos con cáscara, doble cocción crocante, sazonadas con flor de sal marina y páprika ahumada.', 5.50, '🍟', true),
