@@ -198,30 +198,41 @@ export default function KioskPage() {
                 return (
                   <div
                     key={prod.id}
-                    className={`group relative bg-[#121216] rounded-2xl p-5 border transition-all duration-200 flex flex-col justify-between ${
+                    className={`group relative bg-[#121216] rounded-2xl p-4 border transition-all duration-200 flex flex-col justify-between overflow-hidden ${
                       quantity > 0
-                        ? 'border-amber-500/50 bg-gradient-to-b from-amber-500/[0.06] to-[#121216] shadow-lg shadow-amber-500/5'
+                        ? 'border-amber-500/50 bg-gradient-to-b from-amber-500/[0.06] to-[#121216] shadow-xl shadow-amber-500/5'
                         : 'border-white/[0.06] hover:border-white/[0.15]'
                     }`}
                   >
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-2xl flex-shrink-0">
-                          {prod.image_url}
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <span className="text-base font-bold text-amber-300 font-mono">
+                    <div>
+                      {/* Product Visual Header */}
+                      <div className="relative w-full h-44 rounded-xl overflow-hidden bg-[#181820] mb-3.5 border border-white/[0.06]">
+                        {prod.image_url && prod.image_url.startsWith('/') ? (
+                          <img
+                            src={prod.image_url}
+                            alt={prod.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-white/[0.04] to-transparent text-5xl">
+                            <span>{prod.image_url || '🍽️'}</span>
+                          </div>
+                        )}
+                        {/* Floating Price Badge */}
+                        <div className="absolute top-2.5 right-2.5 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/[0.12] shadow-lg">
+                          <span className="text-sm font-bold text-amber-300 font-mono">
                             ${prod.base_price.toFixed(2)}
                           </span>
-                          <span className="text-[10px] text-neutral-400 block font-mono">CAD</span>
+                          <span className="text-[9px] text-neutral-400 font-mono ml-1">CAD</span>
                         </div>
                       </div>
 
-                      <div>
-                        <h3 className="text-base font-bold text-white group-hover:text-amber-200 transition-colors">
+                      <div className="space-y-1.5">
+                        <h3 className="text-base font-bold text-white group-hover:text-amber-200 transition-colors leading-snug">
                           {prod.name}
                         </h3>
-                        <p className="text-xs text-neutral-400 leading-relaxed mt-1 font-light line-clamp-3">
+                        <p className="text-xs text-neutral-400 leading-relaxed font-light line-clamp-2">
                           {prod.description}
                         </p>
                       </div>
