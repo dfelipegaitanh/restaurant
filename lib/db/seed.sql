@@ -41,10 +41,10 @@ INSERT INTO products (id, category_id, name, description, base_price, image_url,
 ('salchipapa-guajira', 'salchipapas', 'Salchipapa Picante Guajira', 'Papas rústicas, salchicha tipo kielbasa picante, chicharrón, guacamole criollo, ají dulce ahumado, cebolla morada encurtida y queso costeño.', 18.50, '/images/products/salchipapa-guajira.jpeg', true),
 
 -- Acompañamientos
-('papas-rusticas', 'sides', 'Papas Rústicas de la Casa (Estándar)', 'Papas cortadas en gajos con cáscara, doble cocción crocante, sazonadas con flor de sal marina y páprika ahumada.', 5.50, '🍟', true),
-('empanaditas-criollas', 'sides', 'Empanaditas Criollas de Carne (4 uds)', 'Empanadas de maíz crocante rellenas de carne desmechada y papa criolla, servidas con ají bogotano y limón.', 7.50, '🥟', true),
-('yucas-crocantes', 'sides', 'Yucas Crocantes con Suero', 'Bastones de yuca frita dorada con costra crujiente, acompañados de suero costeño artesanal.', 6.50, '🥢', true),
-('arepitas-choclo', 'sides', 'Arepitas de Choclo con Queso (2 uds)', 'Masa dulce de maíz choclo tierno a la plancha con mantequilla y lámina generosa de queso campesino fresco.', 6.00, '🫓', true),
+('papas-rusticas', 'sides', 'Papas Rústicas de la Casa (Estándar)', 'Papas cortadas en gajos con cáscara, doble cocción crocante, sazonadas con flor de sal marina y páprika ahumada.', 5.50, '/images/products/papas-rusticas.jpeg', true),
+('empanaditas-criollas', 'sides', 'Empanaditas Criollas de Carne (4 uds)', 'Empanadas de maíz crocante rellenas de carne desmechada y papa criolla, servidas con ají bogotano y limón.', 7.50, '/images/products/empanaditas-criollas.jpeg', true),
+('yucas-crocantes', 'sides', 'Yucas Crocantes con Suero', 'Bastones de yuca frita dorada con costra crujiente, acompañados de suero costeño artesanal.', 6.50, '/images/products/yucas-crocantes.jpeg', true),
+('arepitas-choclo', 'sides', 'Arepitas de Choclo con Queso (2 uds)', 'Masa dulce de maíz choclo tierno a la plancha con mantequilla y lámina generosa de queso campesino fresco.', 6.00, '/images/products/arepitas-choclo.jpeg', true),
 
 -- Bebidas Artesanales
 ('limonada-coco', 'drinks', 'Limonada de Coco & Cardamomo', 'Frappé espeso de leche de coco natural, zumo de lima recién exprimido y toque aromático de cardamomo.', 6.50, '🥥', true),

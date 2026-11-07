@@ -169,7 +169,7 @@ async function seed() {
       name: 'Papas Rústicas de la Casa (Estándar)',
       description: 'Papas cortadas en gajos con cáscara, doble cocción crocante, sazonadas con flor de sal marina y páprika ahumada.',
       base_price: 5.50,
-      image_url: '🍟',
+      image_url: '/images/products/papas-rusticas.jpeg',
     },
     {
       id: 'empanaditas-criollas',
@@ -177,7 +177,7 @@ async function seed() {
       name: 'Empanaditas Criollas de Carne (4 uds)',
       description: 'Empanadas de maíz crocante rellenas de carne desmechada y papa criolla, servidas con ají bogotano y limón.',
       base_price: 7.50,
-      image_url: '🥟',
+      image_url: '/images/products/empanaditas-criollas.jpeg',
     },
     {
       id: 'yucas-crocantes',
@@ -185,7 +185,7 @@ async function seed() {
       name: 'Yucas Crocantes con Suero',
       description: 'Bastones de yuca frita dorada con costra crujiente, acompañados de suero costeño artesanal.',
       base_price: 6.50,
-      image_url: '🥢',
+      image_url: '/images/products/yucas-crocantes.jpeg',
     },
     {
       id: 'arepitas-choclo',
@@ -193,7 +193,7 @@ async function seed() {
       name: 'Arepitas de Choclo con Queso (2 uds)',
       description: 'Masa dulce de maíz choclo tierno a la plancha con mantequilla y lámina generosa de queso campesino fresco.',
       base_price: 6.00,
-      image_url: '🫓',
+      image_url: '/images/products/arepitas-choclo.jpeg',
     },
 
     // 🥤 Bebidas Artesanales
