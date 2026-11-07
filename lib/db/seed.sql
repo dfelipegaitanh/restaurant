@@ -19,12 +19,12 @@ ON CONFLICT (id) DO UPDATE SET
 -- 2. SEED PRODUCTS (Precios en CAD)
 INSERT INTO products (id, category_id, name, description, base_price, image_url, is_available) VALUES
 -- Hamburguesas
-('bogotana-clasica', 'burgers', 'La Bogotana Clásica 2.0', '160g carne Angus certificada, queso doble crema fundido, lechuga romana, tomate milano confitado, cebolla grillé caramelizada en cerveza negra y salsa tártara de la casa en pan brioche tostado.', 16.50, '🍔', true),
-('chicharronera-bbq', 'burgers', 'La Chicharronera BBQ Panela', '160g Angus, panceta de cerdo crocante bañada en reducción de panela y naranja agria, queso mozzarella gratinado, lechuga crocante y emulsión de ajo asado.', 19.50, '🥓', true),
-('paisa-montanera', 'burgers', 'La Paisa Montañera Suprema', '160g carne, trozos de chicharrón crujiente, tajadas de plátano maduro al horno con mantequilla, huevo frito criollo de yema tierna, queso costeño rallado y hogao campesino caliente.', 20.50, '🍳', true),
-('costena-smash', 'burgers', 'La Costeña Smash & Suero', 'Doble carne smashed (2x90g), lámina gruesa de queso costeño asada al fuego, tocineta ahumada al manzano, cebolla frita crocante y abundante suero costeño al cebollino.', 18.50, '🧀', true),
-('guayaba-queso-azul', 'burgers', 'La Guayaba & Queso Azul Smash', 'Doble carne smashed (2x90g), reducción espesa de bocadillo veleño con ají suave, queso azul suave fundido, tocineta crocante y rúgula fresca.', 19.00, '🫐', true),
-('pollo-crispy-andina', 'burgers', 'La Pollo Crispy Andina', 'Suprema de pechuga frita extra crocante marinada en suero y especias, coleslaw criollo con toques de manzana verde, mayonesa de cilantro y pepinillos agridulces.', 17.50, '🍗', true),
+('bogotana-clasica', 'burgers', 'La Bogotana Clásica 2.0', '160g carne Angus certificada, queso doble crema fundido, lechuga romana, tomate milano confitado, cebolla grillé caramelizada en cerveza negra y salsa tártara de la casa en pan brioche tostado.', 16.50, '/images/products/bogotana-clasica.jpeg', true),
+('chicharronera-bbq', 'burgers', 'La Chicharronera BBQ Panela', '160g Angus, panceta de cerdo crocante bañada en reducción de panela y naranja agria, queso mozzarella gratinado, lechuga crocante y emulsión de ajo asado.', 19.50, '/images/products/chicharronera-bbq.jpeg', true),
+('paisa-montanera', 'burgers', 'La Paisa Montañera Suprema', '160g carne, trozos de chicharrón crujiente, tajadas de plátano maduro al horno con mantequilla, huevo frito criollo de yema tierna, queso costeño rallado y hogao campesino caliente.', 20.50, '/images/products/paisa-montanera.jpeg', true),
+('costena-smash', 'burgers', 'La Costeña Smash & Suero', 'Doble carne smashed (2x90g), lámina gruesa de queso costeño asada al fuego, tocineta ahumada al manzano, cebolla frita crocante y abundante suero costeño al cebollino.', 18.50, '/images/products/costena-smash.jpeg', true),
+('guayaba-queso-azul', 'burgers', 'La Guayaba & Queso Azul Smash', 'Doble carne smashed (2x90g), reducción espesa de bocadillo veleño con ají suave, queso azul suave fundido, tocineta crocante y rúgula fresca.', 19.00, '/images/products/guayaba-queso-azul.jpeg', true),
+('pollo-crispy-andina', 'burgers', 'La Pollo Crispy Andina', 'Suprema de pechuga frita extra crocante marinada en suero y especias, coleslaw criollo con toques de manzana verde, mayonesa de cilantro y pepinillos agridulces.', 17.50, '/images/products/pollo-crispy-andina.jpeg', true),
 
 -- Perros Calientes
 ('callejero-monumental', 'dogs', 'El Callejero Monumental', 'Salchicha americana ahumada jumbo en pan brioche largo, queso mozzarella gratinado, tocineta en cubos, lluvia dorada de papa fosforito, salsa tártara, salsa de piña calada y salsa rosada clásica.', 12.50, '🌭', true),

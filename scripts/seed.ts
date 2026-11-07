@@ -35,7 +35,7 @@ async function seed() {
       name: 'La Bogotana Clásica 2.0',
       description: '160g carne Angus certificada, queso doble crema fundido, lechuga romana, tomate milano confitado, cebolla grillé caramelizada en cerveza negra y salsa tártara de la casa en pan brioche tostado.',
       base_price: 16.50,
-      image_url: '🍔',
+      image_url: '/images/products/bogotana-clasica.jpeg',
     },
     {
       id: 'chicharronera-bbq',
@@ -43,7 +43,7 @@ async function seed() {
       name: 'La Chicharronera BBQ Panela',
       description: '160g Angus, panceta de cerdo crocante bañada en reducción de panela y naranja agria, queso mozzarella gratinado, lechuga crocante y emulsión de ajo asado.',
       base_price: 19.50,
-      image_url: '🥓',
+      image_url: '/images/products/chicharronera-bbq.jpeg',
     },
     {
       id: 'paisa-montanera',
@@ -51,7 +51,7 @@ async function seed() {
       name: 'La Paisa Montañera Suprema',
       description: '160g carne, trozos de chicharrón crujiente, tajadas de plátano maduro al horno con mantequilla, huevo frito criollo de yema tierna, queso costeño rallado y hogao campesino caliente.',
       base_price: 20.50,
-      image_url: '🍳',
+      image_url: '/images/products/paisa-montanera.jpeg',
     },
     {
       id: 'costena-smash',
@@ -59,7 +59,7 @@ async function seed() {
       name: 'La Costeña Smash & Suero',
       description: 'Doble carne smashed (2x90g), lámina gruesa de queso costeño asada al fuego, tocineta ahumada al manzano, cebolla frita crocante y abundante suero costeño al cebollino.',
       base_price: 18.50,
-      image_url: '🧀',
+      image_url: '/images/products/costena-smash.jpeg',
     },
     {
       id: 'guayaba-queso-azul',
@@ -67,7 +67,7 @@ async function seed() {
       name: 'La Guayaba & Queso Azul Smash',
       description: 'Doble carne smashed (2x90g), reducción espesa de bocadillo veleño con ají suave, queso azul suave fundido, tocineta crocante y rúgula fresca.',
       base_price: 19.00,
-      image_url: '🫐',
+      image_url: '/images/products/guayaba-queso-azul.jpeg',
     },
     {
       id: 'pollo-crispy-andina',
@@ -75,7 +75,7 @@ async function seed() {
       name: 'La Pollo Crispy Andina',
       description: 'Suprema de pechuga frita extra crocante marinada en suero y especias, coleslaw criollo con toques de manzana verde, mayonesa de cilantro y pepinillos agridulces.',
       base_price: 17.50,
-      image_url: '🍗',
+      image_url: '/images/products/pollo-crispy-andina.jpeg',
     },
 
     // 🌭 Perros Calientes Salvajes
