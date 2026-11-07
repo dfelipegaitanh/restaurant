@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     const { idempotency_key, items } = body;
-    const table_id = body.table_id || 'table-kiosk';
+    const table_id = body.table_id || 'kiosk';
 
     // 1. Validate idempotency_key UUID
     if (!idempotency_key || !UUID_REGEX.test(idempotency_key)) {
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       },
     });
 
-    if (table_id !== 'table-kiosk') {
+    if (table_id !== 'kiosk' && table_id !== 'table-kiosk') {
       eventHub.broadcast({
         type: 'TABLE_STATUS_CHANGED',
         payload: {
