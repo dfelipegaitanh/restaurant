@@ -13,6 +13,7 @@ export default function KioskPage() {
   const [confirmedOrder, setConfirmedOrder] = useState<OrderSummary | null>(null);
   const [countdown, setCountdown] = useState<number>(6);
   const [customerName, setCustomerName] = useState<string>('');
+  const [nameError, setNameError] = useState(false);
 
   // Fetch catalog from /api/menu
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function KioskPage() {
           setConfirmedOrder(null);
           setCart(new Map());
           setCustomerName('');
+          setNameError(false);
           return 6;
         }
         return prev - 1;
@@ -91,6 +93,13 @@ export default function KioskPage() {
   const handleConfirmOrder = async () => {
     if (cart.size === 0 || submitting) return;
 
+    const trimmedName = customerName.trim();
+    if (!trimmedName) {
+      setNameError(true);
+      return;
+    }
+    setNameError(false);
+
     setSubmitting(true);
     const idempotencyKey = crypto.randomUUID();
     const itemsPayload = Array.from(cart.values()).map((entry) => ({
@@ -104,7 +113,7 @@ export default function KioskPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           idempotency_key: idempotencyKey,
-          customer_name: customerName.trim() || undefined,
+          customer_name: trimmedName,
           items: itemsPayload,
         }),
       });
@@ -298,13 +307,27 @@ export default function KioskPage() {
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              <input
-                type="text"
-                placeholder="Tu nombre (opcional)"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className="bg-[#18181c] border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500/50 w-full sm:w-44"
-              />
+              <div className="relative w-full sm:w-56">
+                <input
+                  type="text"
+                  placeholder="Tu nombre (obligatorio)"
+                  value={customerName}
+                  onChange={(e) => {
+                    setCustomerName(e.target.value);
+                    if (nameError && e.target.value.trim()) setNameError(false);
+                  }}
+                  className={`bg-[#18181c] border rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-neutral-400 focus:outline-none w-full transition-all ${
+                    nameError
+                      ? 'border-red-500/80 bg-red-500/[0.04] focus:border-red-500 shadow-sm shadow-red-500/20'
+                      : 'border-white/[0.12] focus:border-amber-500/60'
+                  }`}
+                />
+                {nameError && (
+                  <span className="absolute -bottom-4 left-1 text-[10px] text-red-400 font-mono">
+                    * Nombre obligatorio
+                  </span>
+                )}
+              </div>
               <button
                 onClick={handleConfirmOrder}
                 disabled={submitting}
@@ -375,6 +398,7 @@ export default function KioskPage() {
                   setConfirmedOrder(null);
                   setCart(new Map());
                   setCustomerName('');
+                  setNameError(false);
                 }}
                 className="w-full py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-xs font-mono text-white transition-all flex items-center justify-center gap-2"
               >

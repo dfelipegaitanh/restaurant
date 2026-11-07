@@ -62,7 +62,7 @@ export interface OrderItemInput {
 
 export interface CreateOrderRequest {
   idempotency_key: string; // UUID v4
-  customer_name?: string;
+  customer_name: string;
   items: OrderItemInput[];
 }
 

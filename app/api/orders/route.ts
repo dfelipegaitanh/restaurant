@@ -48,10 +48,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Atomic order ingestion
+    // 3. Validate customer_name (mandatory for fast-casual ticket calling)
+    const trimmedName = typeof customer_name === 'string' ? customer_name.trim() : '';
+    if (!trimmedName) {
+      return NextResponse.json(
+        { success: false, error: 'El nombre del cliente es obligatorio para generar el turno' },
+        { status: 400 }
+      );
+    }
+
+    // 4. Atomic order ingestion
     const result = await createOrderAtomic({
       idempotency_key,
-      customer_name,
+      customer_name: trimmedName,
       items,
     });
 
