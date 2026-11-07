@@ -41,6 +41,13 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-2 text-xs">
+            <Link
+              href="/db"
+              className="px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-neutral-300 hover:text-white transition-all font-mono text-[11px] flex items-center gap-1.5"
+            >
+              <span>🗄️</span>
+              <span>Explorador BD</span>
+            </Link>
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-neutral-400">
               <span
                 className={`w-2 h-2 rounded-full ${
