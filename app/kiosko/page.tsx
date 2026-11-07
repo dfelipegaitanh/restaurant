@@ -190,7 +190,7 @@ export default function KioskPage() {
               Cargando menú criollo...
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {activeCategory?.products.map((prod) => {
                 const cartEntry = cart.get(prod.id);
                 const quantity = cartEntry?.quantity || 0;
@@ -205,8 +205,8 @@ export default function KioskPage() {
                     }`}
                   >
                     <div>
-                      {/* Product Visual Header */}
-                      <div className="relative w-full h-44 rounded-xl overflow-hidden bg-[#181820] mb-3.5 border border-white/[0.06]">
+                      {/* Product Visual Header (Native 4:3 ratio matching Flow photography) */}
+                      <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#181820] mb-3.5 border border-white/[0.06]">
                         {prod.image_url && prod.image_url.startsWith('/') ? (
                           <img
                             src={prod.image_url}
@@ -220,7 +220,7 @@ export default function KioskPage() {
                           </div>
                         )}
                         {/* Floating Price Badge */}
-                        <div className="absolute top-2.5 right-2.5 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/[0.12] shadow-lg">
+                        <div className="absolute top-3 right-3 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/[0.12] shadow-lg">
                           <span className="text-sm font-bold text-amber-300 font-mono">
                             ${prod.base_price.toFixed(2)}
                           </span>
