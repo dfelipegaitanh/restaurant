@@ -47,11 +47,11 @@ INSERT INTO products (id, category_id, name, description, base_price, image_url,
 ('arepitas-choclo', 'sides', 'Arepitas de Choclo con Queso (2 uds)', 'Masa dulce de maíz choclo tierno a la plancha con mantequilla y lámina generosa de queso campesino fresco.', 6.00, '/images/products/arepitas-choclo.jpeg', true),
 
 -- Bebidas Artesanales
-('limonada-coco', 'drinks', 'Limonada de Coco & Cardamomo', 'Frappé espeso de leche de coco natural, zumo de lima recién exprimido y toque aromático de cardamomo.', 6.50, '🥥', true),
-('limonada-panela', 'drinks', 'Limonada de Panela & Maracuyá', 'Refresco frío de panela orgánica macerada con pulpa fresca de maracuyá ácido.', 5.50, '🍹', true),
-('soda-lulo', 'drinks', 'Soda Artesanal de Lulo & Hierbabuena', 'Pulpa de lulo colombiano batida con soda con gas, hojas de hierbabuena y hielo.', 5.50, '🍃', true),
-('malta-leche-condensada', 'drinks', 'Malta Fría con Leche Condensada', 'Botella de Pony Malta helada servida con hilo espeso de leche condensada al estilo tradicional.', 4.50, '🥛', true),
-('gaseosa-postobon', 'drinks', 'Gaseosa Colombiana / Postobón 355ml', 'Colombiana, Manzana Postobón o Bretaña helada.', 3.50, '🥤', true),
+('limonada-coco', 'drinks', 'Limonada de Coco & Cardamomo', 'Frappé espeso de leche de coco natural, zumo de lima recién exprimido y toque aromático de cardamomo.', 6.50, '/images/products/limonada-coco.jpeg', true),
+('limonada-panela', 'drinks', 'Limonada de Panela & Maracuyá', 'Refresco frío de panela orgánica macerada con pulpa fresca de maracuyá ácido.', 5.50, '/images/products/limonada-panela.jpeg', true),
+('soda-lulo', 'drinks', 'Soda Artesanal de Lulo & Hierbabuena', 'Pulpa de lulo colombiano batida con soda con gas, hojas de hierbabuena y hielo.', 5.50, '/images/products/soda-lulo.jpeg', true),
+('malta-leche-condensada', 'drinks', 'Malta Fría con Leche Condensada', 'Botella de Pony Malta helada servida con hilo espeso de leche condensada al estilo tradicional.', 4.50, '/images/products/malta-leche-condensada.jpeg', true),
+('gaseosa-postobon', 'drinks', 'Gaseosa Colombiana / Postobón 355ml', 'Colombiana, Manzana Postobón o Bretaña helada.', 3.50, '/images/products/gaseosa-postobon.jpeg', true),
 
 -- Postres Rápidos
 ('oblea-septima', 'desserts', 'Oblea Deconstruida de la Séptima', 'Capas de barquillo crocante intercaladas con arequipe de leche entero, queso costeño rallado y dulce casero de moras silvestres.', 6.50, '🧇', true),

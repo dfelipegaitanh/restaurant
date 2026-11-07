@@ -203,7 +203,7 @@ async function seed() {
       name: 'Limonada de Coco & Cardamomo',
       description: 'Frappé espeso de leche de coco natural, zumo de lima recién exprimido y toque aromático de cardamomo.',
       base_price: 6.50,
-      image_url: '🥥',
+      image_url: '/images/products/limonada-coco.jpeg',
     },
     {
       id: 'limonada-panela',
@@ -211,7 +211,7 @@ async function seed() {
       name: 'Limonada de Panela & Maracuyá',
       description: 'Refresco frío de panela orgánica macerada con pulpa fresca de maracuyá ácido.',
       base_price: 5.50,
-      image_url: '🍹',
+      image_url: '/images/products/limonada-panela.jpeg',
     },
     {
       id: 'soda-lulo',
@@ -219,7 +219,7 @@ async function seed() {
       name: 'Soda Artesanal de Lulo & Hierbabuena',
       description: 'Pulpa de lulo colombiano batida con soda con gas, hojas de hierbabuena y hielo.',
       base_price: 5.50,
-      image_url: '🍃',
+      image_url: '/images/products/soda-lulo.jpeg',
     },
     {
       id: 'malta-leche-condensada',
@@ -227,7 +227,7 @@ async function seed() {
       name: 'Malta Fría con Leche Condensada',
       description: 'Botella de Pony Malta helada servida con hilo espeso de leche condensada al estilo tradicional.',
       base_price: 4.50,
-      image_url: '🥛',
+      image_url: '/images/products/malta-leche-condensada.jpeg',
     },
     {
       id: 'gaseosa-postobon',
@@ -235,7 +235,7 @@ async function seed() {
       name: 'Gaseosa Colombiana / Postobón 355ml',
       description: 'Colombiana, Manzana Postobón o Bretaña helada.',
       base_price: 3.50,
-      image_url: '🥤',
+      image_url: '/images/products/gaseosa-postobon.jpeg',
     },
 
     // 🍮 Postres Rápidos
