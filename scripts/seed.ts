@@ -1,17 +1,10 @@
-import { getDb } from '../lib/db';
+import { getDb } from '../lib/db/index.ts';
 
-async function seedV2() {
-  console.log('⚡ Starting clean v2 Colombian Street Food Seed (CAD)...');
+async function seed() {
+  console.log('⚡ Seeding Colombian Street Food Fast-Casual Catalog (CAD)...');
   const db = await getDb();
 
-  // 1. Ensure clean kiosk table exists in restaurant_tables
-  await db.query(`
-    INSERT INTO restaurant_tables (id, table_number, capacity, status)
-    VALUES ('kiosk', 99, 99, 'AVAILABLE')
-    ON CONFLICT (id) DO UPDATE SET status = 'AVAILABLE';
-  `);
-
-  // 2. Insert clean Categories (zero 'cat-' prefix)
+  // 1. Categories
   const categories = [
     { id: 'burgers', name: 'Hamburguesas Criollas', display_order: 1 },
     { id: 'dogs', name: 'Perros Calientes Salvajes', display_order: 2 },
@@ -33,7 +26,7 @@ async function seedV2() {
     );
   }
 
-  // 3. Clean Products (zero 'prod-' prefix)
+  // 2. Products
   const products = [
     // 🍔 Hamburguesas Criollas
     {
@@ -279,14 +272,10 @@ async function seedV2() {
     );
   }
 
-  // Clean up any temporary prefixed v2 records from previous attempt
-  await db.query(`DELETE FROM products WHERE id LIKE 'prod-%' AND id NOT IN ('prod-burger-classic', 'prod-burger-double', 'prod-fries-rustic', 'prod-drink-lemonade', 'prod-pizza-margarita')`);
-  await db.query(`DELETE FROM categories WHERE id LIKE 'cat-%' AND id NOT IN ('cat-1', 'cat-2', 'cat-3', 'cat-4')`);
-
-  console.log(`✅ Successfully cleaned prefixes: Seeded ${categories.length} categories and ${products.length} products with clean slugs in CAD!`);
+  console.log(`✅ Seed complete: ${categories.length} categories, ${products.length} products in CAD.`);
 }
 
-seedV2().catch((err) => {
-  console.error('❌ Error seeding v2 menu:', err);
+seed().catch((err) => {
+  console.error('❌ Error during seed:', err);
   process.exit(1);
 });

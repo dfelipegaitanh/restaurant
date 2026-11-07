@@ -8,12 +8,8 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "db:migrate": "node --experimental-strip-types scripts/seed-db.ts",
-    "db:seed": "node --experimental-strip-types scripts/seed-db.ts",
-    "test": "node --experimental-strip-types --test tests/**/*.test.ts",
-    "test:idempotency": "node --experimental-strip-types --test tests/integration/idempotency.test.ts",
-    "test:tier1": "node --experimental-strip-types --test tests/tier1-features/*.test.ts",
-    "test:e2e": "node --experimental-strip-types --test tests/e2e/*.test.ts"
+    "db:seed": "node --experimental-strip-types scripts/seed.ts",
+    "test": "node --experimental-strip-types --test tests/**/*.test.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.2.14",

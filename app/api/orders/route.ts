@@ -1,11 +1,24 @@
 import { NextResponse } from 'next/server';
-import { createOrderAtomic } from '@/lib/db/queries';
+import { createOrderAtomic, getKitchenOrders } from '@/lib/db/queries';
 import { eventHub } from '@/lib/events/eventHub';
 import { CreateOrderRequest } from '@/types/domain';
 
 export const dynamic = 'force-dynamic';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export async function GET() {
+  try {
+    const orders = await getKitchenOrders();
+    return NextResponse.json({ success: true, orders });
+  } catch (err: any) {
+    console.error('Error in GET /api/orders:', err);
+    return NextResponse.json(
+      { success: false, error: err?.message || 'Error fetching orders' },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -17,8 +30,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { idempotency_key, items } = body;
-    const table_id = body.table_id || 'kiosk';
+    const { idempotency_key, items, customer_name } = body;
 
     // 1. Validate idempotency_key UUID
     if (!idempotency_key || !UUID_REGEX.test(idempotency_key)) {
@@ -28,7 +40,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Validate items
+    // 2. Validate items
     if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Order must contain at least one item' },
@@ -36,14 +48,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Atomic order ingestion with server-side price calculation and modifier validation
+    // 3. Atomic order ingestion
     const result = await createOrderAtomic({
-      table_id,
       idempotency_key,
+      customer_name,
       items,
     });
 
-    // 5. If duplicate replay: return HTTP 200 with replay header, suppress event broadcast
+    // 4. Duplicate replay: return HTTP 200 with replay header, suppress event broadcast
     if (result.replayed) {
       return NextResponse.json(
         {
@@ -60,23 +72,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // 6. New order: Broadcast ORDER_CREATED and TABLE_STATUS_CHANGED to KDS and Cashier
+    // 5. New order: Broadcast ORDER_CREATED to KDS via SSE
     eventHub.broadcast({
       type: 'ORDER_CREATED',
       payload: {
         order: result.order,
       },
     });
-
-    if (table_id !== 'kiosk' && table_id !== 'table-kiosk') {
-      eventHub.broadcast({
-        type: 'TABLE_STATUS_CHANGED',
-        payload: {
-          table_id,
-          status: 'OCCUPIED',
-        },
-      });
-    }
 
     return NextResponse.json(
       {
@@ -89,9 +91,6 @@ export async function POST(request: Request) {
   } catch (err: any) {
     console.error('Error in POST /api/orders:', err);
     const message = err?.message || 'Error creating order';
-    if (message.includes('not found')) {
-      return NextResponse.json({ success: false, error: message }, { status: 404 });
-    }
     return NextResponse.json({ success: false, error: message }, { status: 400 });
   }
 }

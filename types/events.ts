@@ -1,8 +1,8 @@
 // ============================================================================
-// types/events.ts — Realtime Event discriminated unions for SSE and EventHub
+// types/events.ts — Realtime Event Discriminated Unions for KDS & Kiosk
 // ============================================================================
 
-import { OrderStatus, TableStatus, OrderSummary } from './domain';
+import { OrderStatus, OrderSummary } from './domain';
 
 export type RealtimeEvent =
   | {
@@ -15,24 +15,9 @@ export type RealtimeEvent =
       type: 'ORDER_STATUS_CHANGED';
       payload: {
         order_id: string;
-        table_id: string;
+        order_number?: number;
         old_status: OrderStatus;
         new_status: OrderStatus;
         updated_at?: string;
-      };
-    }
-  | {
-      type: 'TABLE_STATUS_CHANGED';
-      payload: {
-        table_id: string;
-        status: TableStatus;
-      };
-    }
-  | {
-      type: 'PAYMENT_COMPLETED';
-      payload: {
-        table_id: string;
-        bill_id: string;
-        amount: number;
       };
     };

@@ -141,12 +141,12 @@ async function ensureInitialized(client: DbClient): Promise<void> {
       const check = await client.query<{ exists: boolean }>(`
         SELECT EXISTS (
           SELECT FROM information_schema.tables 
-          WHERE table_name = 'restaurant_tables'
+          WHERE table_name = 'categories'
         ) as exists;
       `);
 
       if (!check.rows[0]?.exists) {
-        console.log('⚡ [DB] First boot detected: table restaurant_tables missing.');
+        console.log('⚡ [DB] First boot detected: table categories missing.');
         console.log('⚡ [DB] Auto-initializing PostgreSQL 16 schema and seed data...');
 
         const basePath = process.cwd();

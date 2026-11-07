@@ -40,7 +40,7 @@ export async function PATCH(
       type: 'ORDER_STATUS_CHANGED',
       payload: {
         order_id: order.id,
-        table_id: order.table_id,
+        order_number: order.order_number,
         old_status: oldStatus,
         new_status: body.status,
         updated_at: order.updated_at,
