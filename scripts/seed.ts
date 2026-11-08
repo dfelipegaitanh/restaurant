@@ -77,6 +77,46 @@ async function seed() {
       base_price: 17.50,
       image_url: '/images/products/pollo-crispy-andina.jpeg',
     },
+    {
+      id: 'llanera-mamona',
+      category_id: 'burgers',
+      name: 'La Llanera Ahumada al Barril',
+      description: '160g carne Angus combinada con lascas de ternera a la llanera ahumada 6 horas al barril, queso siete cueros fundido, yuca crocante en hilos, chimichurri de cilantro cimarrón y mayonesa de ají dulce.',
+      base_price: 21.00,
+      image_url: '/images/products/llanera-mamona.jpeg',
+    },
+    {
+      id: 'valluna-aborrajada',
+      category_id: 'burgers',
+      name: 'La Valluna Aborrajada',
+      description: '160g carne Angus a la parrilla coronada con medallón de plátano maduro aborrajado relleno de queso doble crema y bocadillo, tocineta crocante, rúgula fresca y emulsión cítrica de lulo del Valle.',
+      base_price: 19.50,
+      image_url: '/images/products/valluna-aborrajada.jpeg',
+    },
+    {
+      id: 'santandereana-cabro',
+      category_id: 'burgers',
+      name: 'La Santandereana Arrecha',
+      description: 'Doble carne smashed (2x90g) en costra de pepitoria crocante, queso paipa madurado fundido, cebolla ocañera encurtida en vinagre de caña, tocineta ahumada y tártara brava santandereana.',
+      base_price: 20.00,
+      image_url: '/images/products/santandereana-cabro.jpeg',
+    },
+    {
+      id: 'rolita-ajiaco',
+      category_id: 'burgers',
+      name: 'La Rolita Ajiaco & Alcaparras',
+      description: '160g carne Angus jugosa, pechuga desmechada en crema espesa de guascas, lámina de aguacate Hass, alcaparras fritas crocantes, chips de papa criolla dorada y queso campesino asado.',
+      base_price: 18.50,
+      image_url: '/images/products/rolita-ajiaco.jpeg',
+    },
+    {
+      id: 'pacifico-encocada',
+      category_id: 'burgers',
+      name: 'La Pacífico Surf & Turf Encocada',
+      description: '160g carne Angus a la plancha coronada con camarones tigre salteados en salsa encocada de leche de coco, poleo y cimarrón, queso mozzarella gratinado, crocante de plátano verde y alioli de limón.',
+      base_price: 22.50,
+      image_url: '/images/products/pacifico-encocada.jpeg',
+    },
 
     // 🌭 Perros Calientes Salvajes
     {
@@ -119,6 +159,46 @@ async function seed() {
       base_price: 14.50,
       image_url: '/images/products/butifarra-queso.jpeg',
     },
+    {
+      id: 'perro-llanero',
+      category_id: 'dogs',
+      name: 'El Llanero al Barril Dog',
+      description: 'Salchicha ahumada al barril en pan brioche, cubierta con pecho de res desmechado a la brasa, queso siete cueros estirado, lluvia de yuca ripio crocante y guasacaca cremosa de aguacate y cilantro.',
+      base_price: 15.50,
+      image_url: '/images/products/perro-llanero.jpeg',
+    },
+    {
+      id: 'perro-valluno',
+      category_id: 'dogs',
+      name: 'El Chuleta & Lulo Valluno Dog',
+      description: 'Salchicha americana con tiras crocantes de chuleta valluna apanada, queso doble crema gratinado, ensalada fresca de repollo morado, salsa agria de lulo y lluvia de platanitos verdes triturados.',
+      base_price: 15.00,
+      image_url: '/images/products/perro-valluno.jpeg',
+    },
+    {
+      id: 'perro-pastuso',
+      category_id: 'dogs',
+      name: 'El Pastuso Hornado & Ají de Maní',
+      description: 'Salchicha alemana grillada con cerdo hornado nariñense desmechado, mote tierno salteado, queso paipa gratinado, papa fosforito y salsa cremosa de ají de maní artesanal.',
+      base_price: 16.00,
+      image_url: '/images/products/perro-pastuso.jpeg',
+    },
+    {
+      id: 'perro-tolimense',
+      category_id: 'dogs',
+      name: 'El Lechona Tolimense Crunchy Dog',
+      description: 'Salchicha jumbo ahumada coronada con lechona tolimense horneada, trozos de galleta de cuero de cerdo ultra crocante, arveja amarilla, queso mozzarella y hogao de cebolla larga.',
+      base_price: 16.50,
+      image_url: '/images/products/perro-tolimense.jpeg',
+    },
+    {
+      id: 'perro-cartagenero',
+      category_id: 'dogs',
+      name: 'El Cartagenero Camarón & Coco Dog',
+      description: 'Salchicha a la parrilla en pan brioche de coco, camarones al ajillo y leche de coco, queso costeño asado en cubitos, cebolla morada encurtida en limón, papa ripio y suero picante de ají chombo.',
+      base_price: 17.50,
+      image_url: '/images/products/perro-cartagenero.jpeg',
+    },
 
     // 🍟 Salchipapas Monumentales
     {
@@ -160,6 +240,46 @@ async function seed() {
       description: 'Papas rústicas, salchicha tipo kielbasa picante, chicharrón, guacamole criollo, ají dulce ahumado, cebolla morada encurtida y queso costeño.',
       base_price: 18.50,
       image_url: '/images/products/salchipapa-guajira.jpeg',
+    },
+    {
+      id: 'salchipapa-llanera',
+      category_id: 'salchipapas',
+      name: 'Salchipapa Llanera al Barril',
+      description: 'Cama de papas rústicas y bastones de yuca frita, salchicha ahumada, bondiola y punta de anca al barril en cubos, queso siete cueros fundido y baño de guasacaca llanera.',
+      base_price: 22.00,
+      image_url: '🥩',
+    },
+    {
+      id: 'salchipapa-tolimense',
+      category_id: 'salchipapas',
+      name: 'Salchipapa Lechona & Cuero Tostado',
+      description: 'Papas criollas doradas y papas rústicas, salchicha americana, abundante lechona tolimense desmechada, chicharrón de cuero soplado crocante, mozzarella derretido y ají de tomate de árbol.',
+      base_price: 21.00,
+      image_url: '🐖',
+    },
+    {
+      id: 'salchipapa-paisa',
+      category_id: 'salchipapas',
+      name: 'Salchipapa Bandeja Montañera',
+      description: 'Papas en cascos, chorizo antioqueño y morcilla crocante en rodajas, chicharrón carnudo, maduritos calados, carne molida criolla, dos huevos de codorniz, aguacate y hogao caliente.',
+      base_price: 22.50,
+      image_url: '🍳',
+    },
+    {
+      id: 'salchipapa-marina',
+      category_id: 'salchipapas',
+      name: 'Salchipapa Mar & Tierra del Pacífico',
+      description: 'Papas rústicas y chips de plátano verde, salchicha ahumada, camarones y anillos de calamar al ajillo en salsa encocada cremosa, queso gratinado y limón mandarino.',
+      base_price: 24.00,
+      image_url: '🦑',
+    },
+    {
+      id: 'salchipapa-trufada',
+      category_id: 'salchipapas',
+      name: 'Salchipapa Rolita Trufada & Paipa',
+      description: 'Mezcla de papa nativa sabanera y papa criolla, salchicha artesanal de ternera, hongos portobello salteados al ajillo, queso paipa rallado fundido, tocineta ahumada y mayonesa de trufa negra y cilantro.',
+      base_price: 20.50,
+      image_url: '🍄',
     },
 
     // 🥔 Acompañamientos & Entradas Rápidas
@@ -245,7 +365,7 @@ async function seed() {
       name: 'Oblea Deconstruida de la Séptima',
       description: 'Capas de barquillo crocante intercaladas con arequipe de leche entero, queso costeño rallado y dulce casero de moras silvestres.',
       base_price: 6.50,
-      image_url: '🧇',
+      image_url: '/images/products/oblea-septima.jpeg',
     },
     {
       id: 'churros-criollos',
@@ -253,7 +373,7 @@ async function seed() {
       name: 'Churros Criollos con Salsa de Café',
       description: '4 bastones de churro recién fritos azucarados con canela, servidos con dip de caramelo y café de origen colombiano.',
       base_price: 6.00,
-      image_url: '🍩',
+      image_url: '/images/products/churros-criollos.jpeg',
     },
   ];
 
