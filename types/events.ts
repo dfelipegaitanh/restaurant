@@ -20,4 +20,11 @@ export type RealtimeEvent =
         new_status: OrderStatus;
         updated_at?: string;
       };
+    }
+  | {
+      type: 'CATALOG_UPDATED';
+      payload: {
+        timestamp: number;
+        reason?: string;
+      };
     };

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { CategoryWithProducts, Product, OrderSummary } from '@/types/domain';
 
@@ -15,19 +15,64 @@ export default function KioskPage() {
   const [customerName, setCustomerName] = useState<string>('');
   const [nameError, setNameError] = useState(false);
 
-  // Fetch catalog from /api/menu
-  useEffect(() => {
-    fetch('/api/menu')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.categories.length > 0) {
-          setCategories(data.categories);
-          setActiveCategoryId(data.categories[0].id);
-        }
-      })
-      .catch((err) => console.error('Error fetching menu:', err))
-      .finally(() => setLoading(false));
+  // Fetch catalog from /api/menu with Live Auto-Reload
+  const loadMenu = useCallback(async (isInitial = false) => {
+    try {
+      if (isInitial) setLoading(true);
+      const res = await fetch('/api/menu', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.categories)) {
+        setCategories(data.categories);
+        setActiveCategoryId((prev) => {
+          const exists = data.categories.some((c: CategoryWithProducts) => c.id === prev);
+          return exists ? prev : data.categories[0]?.id || 'burgers';
+        });
+      }
+    } catch (err) {
+      console.error('Error fetching menu:', err);
+    } finally {
+      if (isInitial) setLoading(false);
+    }
   }, []);
+
+  // Hydration & Real-time Auto-Reload (SSE + Polling + Window Focus)
+  useEffect(() => {
+    loadMenu(true);
+
+    // 1. SSE Real-time Listener for catalog updates
+    let es: EventSource | null = null;
+    try {
+      es = new EventSource('/api/realtime');
+      es.addEventListener('CATALOG_UPDATED', () => {
+        loadMenu(false);
+      });
+    } catch (e) {
+      console.warn('SSE connection error in kiosk:', e);
+    }
+
+    // 2. Periodic background poll (every 3 seconds) to catch DB / image changes automatically
+    const pollInterval = setInterval(() => {
+      loadMenu(false);
+    }, 3000);
+
+    // 3. Window focus / visibility change revalidation
+    const onFocus = () => loadMenu(false);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadMenu(false);
+      }
+    };
+
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      if (es) es.close();
+      clearInterval(pollInterval);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [loadMenu]);
 
   // Auto-reset countdown when order is confirmed
   useEffect(() => {
@@ -78,16 +123,55 @@ export default function KioskPage() {
     });
   };
 
+  // Combo Upsell Computations & Handlers
+  const allProducts = useMemo(() => categories.flatMap((c) => c.products), [categories]);
+  const friesProduct = allProducts.find((p) => p.id === 'papas-rusticas');
+  const drinkProduct = allProducts.find((p) => p.id === 'gaseosa-postobon');
+
+  const hasMainDish = useMemo(() => {
+    return Array.from(cart.values()).some(
+      (e) => e.product.category_id === 'burgers' || e.product.category_id === 'dogs'
+    );
+  }, [cart]);
+
+  const hasFries = cart.has('papas-rusticas');
+  const hasDrink = cart.has('gaseosa-postobon');
+  const hasCombo = hasMainDish && hasFries && hasDrink;
+  const COMBO_DISCOUNT = 1.50; // $9.00 normal -> $7.50 CAD en combo ($1.50 CAD ahorro)
+
   // Cart computations
-  const { totalItems, totalAmount } = useMemo(() => {
+  const { totalItems, subtotalAmount, totalAmount } = useMemo(() => {
     let items = 0;
     let amount = 0;
     for (const entry of cart.values()) {
       items += entry.quantity;
       amount += entry.quantity * entry.product.base_price;
     }
-    return { totalItems: items, totalAmount: Number(amount.toFixed(2)) };
-  }, [cart]);
+    const finalAmount = hasCombo ? Math.max(0, amount - COMBO_DISCOUNT) : amount;
+    return {
+      totalItems: items,
+      subtotalAmount: Number(amount.toFixed(2)),
+      totalAmount: Number(finalAmount.toFixed(2)),
+    };
+  }, [cart, hasCombo]);
+
+  const handleAddCombo = () => {
+    if (!friesProduct || !drinkProduct) return;
+    setCart((prev) => {
+      const next = new Map(prev);
+      const existingFries = next.get(friesProduct.id);
+      next.set(friesProduct.id, {
+        product: friesProduct,
+        quantity: existingFries ? existingFries.quantity + 1 : 1,
+      });
+      const existingDrink = next.get(drinkProduct.id);
+      next.set(drinkProduct.id, {
+        product: drinkProduct,
+        quantity: existingDrink ? existingDrink.quantity + 1 : 1,
+      });
+      return next;
+    });
+  };
 
   // Submit order
   const handleConfirmOrder = async () => {
@@ -292,56 +376,111 @@ export default function KioskPage() {
       {/* Floating Bottom Order Bar */}
       {totalItems > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#0c0c0e]/95 backdrop-blur-2xl border-t border-amber-500/20 p-4 shadow-2xl">
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 w-full sm:w-auto">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500 text-black flex items-center justify-center font-mono font-black text-lg shadow-lg shadow-amber-500/30">
-                {totalItems}
+          <div className="max-w-4xl mx-auto space-y-3">
+            {/* 1-Tap Combo Upsell Banner */}
+            {hasMainDish && (
+              <div
+                className={`flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-2.5 rounded-2xl border transition-all ${
+                  hasCombo
+                    ? 'bg-emerald-950/40 border-emerald-500/30'
+                    : 'bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border-amber-500/30'
+                }`}
+              >
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <span className="text-2xl flex-shrink-0">{hasCombo ? '🎉' : '🍟🥤'}</span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-white tracking-wide">
+                        {hasCombo ? '¡Combo Criollo Activo!' : '¿Lo vuelves Combo Criollo?'}
+                      </span>
+                      <span
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                          hasCombo
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                        }`}
+                      >
+                        {hasCombo ? '-$1.50 CAD Descuento' : 'Solo +$7.50 CAD'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-neutral-400">
+                      {hasCombo
+                        ? 'Incluye Papas Rústicas + Gaseosa Colombiana con descuento combo aplicado.'
+                        : '+ Papas Rústicas de la Casa y Gaseosa Colombiana (Precio regular $9.00 CAD).'}
+                    </p>
+                  </div>
+                </div>
+
+                {!hasCombo && friesProduct && drinkProduct && (
+                  <button
+                    onClick={handleAddCombo}
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black font-bold text-xs tracking-wide shadow-md shadow-amber-500/20 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap"
+                  >
+                    <span>+ Agregar Combo</span>
+                    <span className="font-mono font-black">($7.50 CAD)</span>
+                  </button>
+                )}
               </div>
-              <div>
-                <div className="text-xs text-neutral-400">Total a pagar:</div>
-                <div className="text-2xl font-bold font-mono text-white flex items-baseline gap-1.5">
-                  <span>${totalAmount.toFixed(2)}</span>
-                  <span className="text-xs text-amber-400 font-sans font-semibold">CAD</span>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500 text-black flex items-center justify-center font-mono font-black text-lg shadow-lg shadow-amber-500/30">
+                  {totalItems}
+                </div>
+                <div>
+                  <div className="text-xs text-neutral-400 flex items-center gap-1.5">
+                    <span>Total a pagar:</span>
+                    {hasCombo && (
+                      <span className="line-through text-neutral-500 font-mono text-[11px]">
+                        ${subtotalAmount.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-2xl font-bold font-mono text-white flex items-baseline gap-1.5">
+                    <span>${totalAmount.toFixed(2)}</span>
+                    <span className="text-xs text-amber-400 font-sans font-semibold">CAD</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="relative w-full sm:w-56">
-                <input
-                  type="text"
-                  placeholder="Tu nombre (obligatorio)"
-                  value={customerName}
-                  onChange={(e) => {
-                    setCustomerName(e.target.value);
-                    if (nameError && e.target.value.trim()) setNameError(false);
-                  }}
-                  className={`bg-[#18181c] border rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-neutral-400 focus:outline-none w-full transition-all ${
-                    nameError
-                      ? 'border-red-500/80 bg-red-500/[0.04] focus:border-red-500 shadow-sm shadow-red-500/20'
-                      : 'border-white/[0.12] focus:border-amber-500/60'
-                  }`}
-                />
-                {nameError && (
-                  <span className="absolute -bottom-4 left-1 text-[10px] text-red-400 font-mono">
-                    * Nombre obligatorio
-                  </span>
-                )}
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="relative w-full sm:w-56">
+                  <input
+                    type="text"
+                    placeholder="Tu nombre (obligatorio)"
+                    value={customerName}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value);
+                      if (nameError && e.target.value.trim()) setNameError(false);
+                    }}
+                    className={`bg-[#18181c] border rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-neutral-400 focus:outline-none w-full transition-all ${
+                      nameError
+                        ? 'border-red-500/80 bg-red-500/[0.04] focus:border-red-500 shadow-sm shadow-red-500/20'
+                        : 'border-white/[0.12] focus:border-amber-500/60'
+                    }`}
+                  />
+                  {nameError && (
+                    <span className="absolute -bottom-4 left-1 text-[10px] text-red-400 font-mono">
+                      * Nombre obligatorio
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={handleConfirmOrder}
+                  disabled={submitting}
+                  className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black font-bold text-sm tracking-wide shadow-xl shadow-amber-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+                >
+                  {submitting ? (
+                    <span>Generando Ticket...</span>
+                  ) : (
+                    <>
+                      <span>Confirmar Pedido</span>
+                      <span>→</span>
+                    </>
+                  )}
+                </button>
               </div>
-              <button
-                onClick={handleConfirmOrder}
-                disabled={submitting}
-                className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-black font-bold text-sm tracking-wide shadow-xl shadow-amber-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
-              >
-                {submitting ? (
-                  <span>Generando Ticket...</span>
-                ) : (
-                  <>
-                    <span>Confirmar Pedido</span>
-                    <span>→</span>
-                  </>
-                )}
-              </button>
             </div>
           </div>
         </div>

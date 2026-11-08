@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { eventHub } from '@/lib/events/eventHub';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +51,18 @@ export async function POST(request: Request) {
     // Safety check: allow read/inspection queries primarily
     const db = await getDb();
     const result = await db.query(sql);
+
+    // If query mutated catalog/products/categories, broadcast to live clients
+    if (/INSERT|UPDATE|DELETE/i.test(sql)) {
+      try {
+        eventHub.broadcast({
+          type: 'CATALOG_UPDATED',
+          payload: { timestamp: Date.now(), reason: 'db_mutation' },
+        });
+      } catch (e) {
+        console.warn('Failed to broadcast CATALOG_UPDATED event:', e);
+      }
+    }
 
     return NextResponse.json({
       success: true,
