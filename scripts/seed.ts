@@ -247,7 +247,7 @@ async function seed() {
       name: 'Salchipapa Llanera al Barril',
       description: 'Cama de papas rústicas y bastones de yuca frita, salchicha ahumada, bondiola y punta de anca al barril en cubos, queso siete cueros fundido y baño de guasacaca llanera.',
       base_price: 22.00,
-      image_url: '🥩',
+      image_url: '/images/products/salchipapa-llanera.jpeg',
     },
     {
       id: 'salchipapa-tolimense',
@@ -255,7 +255,7 @@ async function seed() {
       name: 'Salchipapa Lechona & Cuero Tostado',
       description: 'Papas criollas doradas y papas rústicas, salchicha americana, abundante lechona tolimense desmechada, chicharrón de cuero soplado crocante, mozzarella derretido y ají de tomate de árbol.',
       base_price: 21.00,
-      image_url: '🐖',
+      image_url: '/images/products/salchipapa-tolimense.jpeg',
     },
     {
       id: 'salchipapa-paisa',
@@ -263,7 +263,7 @@ async function seed() {
       name: 'Salchipapa Bandeja Montañera',
       description: 'Papas en cascos, chorizo antioqueño y morcilla crocante en rodajas, chicharrón carnudo, maduritos calados, carne molida criolla, dos huevos de codorniz, aguacate y hogao caliente.',
       base_price: 22.50,
-      image_url: '🍳',
+      image_url: '/images/products/salchipapa-paisa.jpeg',
     },
     {
       id: 'salchipapa-marina',
@@ -271,7 +271,7 @@ async function seed() {
       name: 'Salchipapa Mar & Tierra del Pacífico',
       description: 'Papas rústicas y chips de plátano verde, salchicha ahumada, camarones y anillos de calamar al ajillo en salsa encocada cremosa, queso gratinado y limón mandarino.',
       base_price: 24.00,
-      image_url: '🦑',
+      image_url: '/images/products/salchipapa-marina.jpeg',
     },
     {
       id: 'salchipapa-trufada',
@@ -279,7 +279,7 @@ async function seed() {
       name: 'Salchipapa Rolita Trufada & Paipa',
       description: 'Mezcla de papa nativa sabanera y papa criolla, salchicha artesanal de ternera, hongos portobello salteados al ajillo, queso paipa rallado fundido, tocineta ahumada y mayonesa de trufa negra y cilantro.',
       base_price: 20.50,
-      image_url: '🍄',
+      image_url: '/images/products/salchipapa-trufada.jpeg',
     },
 
     // 🥔 Acompañamientos & Entradas Rápidas

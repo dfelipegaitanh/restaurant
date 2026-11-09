@@ -162,7 +162,7 @@ export async function createOrderAtomic(params: CreateOrderParams): Promise<Crea
   // 3. Fetch products to calculate authoritative server-side price
   const productIds = params.items.map((i) => i.product_id);
   const productsRes = await db.query(
-    `SELECT id, name, base_price, is_available FROM products WHERE id = ANY($1::text[])`,
+    `SELECT id, category_id, name, base_price, is_available FROM products WHERE id = ANY($1::text[])`,
     [productIds]
   );
   const productMap = new Map(productsRes.rows.map((p) => [p.id, p]));
@@ -198,6 +198,29 @@ export async function createOrderAtomic(params: CreateOrderParams): Promise<Crea
       subtotal,
     });
   }
+
+  // 3b. Calculate multi-combo discount server-side ($1.50 CAD per complete combo)
+  // 1 main dish (burger or dog) + 1 side (sides category) + 1 drink (drinks category) = 1 combo
+  let totalMains = 0;
+  let sidesCount = 0;
+  let drinksCount = 0;
+
+  for (const item of params.items) {
+    const prod = productMap.get(item.product_id);
+    if (prod) {
+      if (prod.category_id === 'burgers' || prod.category_id === 'dogs') {
+        totalMains += item.quantity;
+      } else if (prod.category_id === 'sides') {
+        sidesCount += item.quantity;
+      } else if (prod.category_id === 'drinks') {
+        drinksCount += item.quantity;
+      }
+    }
+  }
+
+  const activeCombos = Math.min(totalMains, sidesCount, drinksCount);
+  const comboDiscount = Number((activeCombos * 1.50).toFixed(2));
+  orderTotal = Math.max(0, Number((orderTotal - comboDiscount).toFixed(2)));
 
   // 4. Atomic transaction insertion
   return await db.transaction(async (tx) => {
