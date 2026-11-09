@@ -32,6 +32,15 @@ const AVAILABLE_DRINKS = [
   { id: 'malta-leche-condensada', name: 'Malta con Leche Cond.', basePrice: 4.50, delta: 1.00, icon: '🥛' },
 ];
 
+// Main dishes eligible for Combo Criollo (Burgers, Hot Dogs, and Salchipapas)
+const isMainDish = (categoryId: string) =>
+  categoryId === 'burgers' || categoryId === 'dogs' || categoryId === 'salchipapas';
+
+interface ComboItemConfig {
+  sideId: string;
+  drinkId: string;
+}
+
 export default function KioskPage() {
   const [categories, setCategories] = useState<CategoryWithProducts[]>([]);
   const [activeCategoryId, setActiveCategoryId] = useState<string>('burgers');
@@ -49,9 +58,9 @@ export default function KioskPage() {
   const [itemModifiers, setItemModifiers] = useState<Map<string, { without: string[]; extras: string[] }>>(new Map());
   const [customizingProductId, setCustomizingProductId] = useState<string | null>(null);
 
-  // Bundle Padre-Hijo: Map<productId, { sideId: string, drinkId: string }>
-  const [combosByProduct, setCombosByProduct] = useState<Map<string, { sideId: string; drinkId: string }>>(new Map());
-  const [openSwapPicker, setOpenSwapPicker] = useState<{ productId: string; type: 'side' | 'drink' } | null>(null);
+  // Bundle Padre-Hijo per unit: Map<productId, ComboItemConfig[]> (array length <= quantity)
+  const [combosByProduct, setCombosByProduct] = useState<Map<string, ComboItemConfig[]>>(new Map());
+  const [openSwapPicker, setOpenSwapPicker] = useState<{ productId: string; comboIndex: number; type: 'side' | 'drink' } | null>(null);
 
   // Fetch catalog from /api/menu with Live Auto-Reload
   const loadMenu = useCallback(async (isInitial = false) => {
@@ -153,10 +162,20 @@ export default function KioskPage() {
       const existing = next.get(productId);
       if (!existing) return next;
       if (existing.quantity > 1) {
-        next.set(productId, { product: existing.product, quantity: existing.quantity - 1 });
+        const newQty = existing.quantity - 1;
+        next.set(productId, { product: existing.product, quantity: newQty });
+
+        // Trim combos array if longer than new quantity
+        setCombosByProduct((cPrev) => {
+          const cNext = new Map(cPrev);
+          const currentCombos = cNext.get(productId);
+          if (currentCombos && currentCombos.length > newQty) {
+            cNext.set(productId, currentCombos.slice(0, newQty));
+          }
+          return cNext;
+        });
       } else {
         next.delete(productId);
-        // Also cleanup combo and modifiers if last item removed
         setCombosByProduct((cPrev) => {
           const cNext = new Map(cPrev);
           cNext.delete(productId);
@@ -201,33 +220,80 @@ export default function KioskPage() {
     setIsCartDrawerOpen(false);
   };
 
-  // Combo Bundle Operations
-  const toggleComboForMain = (productId: string) => {
+  // Combo Bundle Operations per Unit
+  const addComboToProduct = (productId: string) => {
+    const entry = cart.get(productId);
+    if (!entry) return;
+
     setCombosByProduct((prev) => {
       const next = new Map(prev);
-      if (next.has(productId)) {
-        next.delete(productId);
-      } else {
-        next.set(productId, { sideId: 'papas-rusticas', drinkId: 'gaseosa-postobon' });
+      const current = next.get(productId) || [];
+      if (current.length < entry.quantity) {
+        next.set(productId, [
+          ...current,
+          { sideId: 'papas-rusticas', drinkId: 'gaseosa-postobon' },
+        ]);
       }
       return next;
     });
   };
 
-  const updateComboSide = (productId: string, sideId: string) => {
+  const removeComboFromProduct = (productId: string, comboIndex: number) => {
     setCombosByProduct((prev) => {
       const next = new Map(prev);
-      const existing = next.get(productId) || { sideId: 'papas-rusticas', drinkId: 'gaseosa-postobon' };
-      next.set(productId, { ...existing, sideId });
+      const current = next.get(productId) || [];
+      const updated = current.filter((_, idx) => idx !== comboIndex);
+      if (updated.length === 0) {
+        next.delete(productId);
+      } else {
+        next.set(productId, updated);
+      }
+      return next;
+    });
+    if (openSwapPicker?.productId === productId && openSwapPicker.comboIndex === comboIndex) {
+      setOpenSwapPicker(null);
+    }
+  };
+
+  const replicateComboToAll = (productId: string) => {
+    const entry = cart.get(productId);
+    if (!entry) return;
+
+    setCombosByProduct((prev) => {
+      const next = new Map(prev);
+      const current = next.get(productId) || [];
+      const template = current[0] || { sideId: 'papas-rusticas', drinkId: 'gaseosa-postobon' };
+      const replicated: ComboItemConfig[] = [];
+      for (let i = 0; i < entry.quantity; i++) {
+        replicated.push({ ...template });
+      }
+      next.set(productId, replicated);
       return next;
     });
   };
 
-  const updateComboDrink = (productId: string, drinkId: string) => {
+  const updateComboSide = (productId: string, comboIndex: number, sideId: string) => {
     setCombosByProduct((prev) => {
       const next = new Map(prev);
-      const existing = next.get(productId) || { sideId: 'papas-rusticas', drinkId: 'gaseosa-postobon' };
-      next.set(productId, { ...existing, drinkId });
+      const current = next.get(productId) || [];
+      if (current[comboIndex]) {
+        const updated = [...current];
+        updated[comboIndex] = { ...updated[comboIndex], sideId };
+        next.set(productId, updated);
+      }
+      return next;
+    });
+  };
+
+  const updateComboDrink = (productId: string, comboIndex: number, drinkId: string) => {
+    setCombosByProduct((prev) => {
+      const next = new Map(prev);
+      const current = next.get(productId) || [];
+      if (current[comboIndex]) {
+        const updated = [...current];
+        updated[comboIndex] = { ...updated[comboIndex], drinkId };
+        next.set(productId, updated);
+      }
       return next;
     });
   };
@@ -271,11 +337,10 @@ export default function KioskPage() {
     let mains = 0;
     let combos = 0;
     for (const [prodId, entry] of cart.entries()) {
-      if (entry.product.category_id === 'burgers' || entry.product.category_id === 'dogs') {
+      if (isMainDish(entry.product.category_id)) {
         mains += entry.quantity;
-        if (combosByProduct.has(prodId)) {
-          combos += entry.quantity;
-        }
+        const currentCombos = combosByProduct.get(prodId) || [];
+        combos += currentCombos.length;
       }
     }
     return {
@@ -292,11 +357,11 @@ export default function KioskPage() {
     let comboDiscount = 0;
 
     for (const [prodId, entry] of cart.entries()) {
-      const isMain = entry.product.category_id === 'burgers' || entry.product.category_id === 'dogs';
-      const combo = isMain ? combosByProduct.get(prodId) : null;
+      const isMain = isMainDish(entry.product.category_id);
+      const combos = isMain ? (combosByProduct.get(prodId) || []) : [];
 
-      // Item count: main dish + combo items
-      itemsCount += entry.quantity * (combo ? 3 : 1);
+      // Item count: main dish + 2 items per active combo (side + drink)
+      itemsCount += entry.quantity + (combos.length * 2);
 
       // Extras cost (modifiers)
       const mods = itemModifiers.get(prodId);
@@ -305,16 +370,16 @@ export default function KioskPage() {
         return sum + (extra?.price || 0);
       }, 0);
 
-      // Base price of main dish
+      // Base price of dish
       subtotal += entry.quantity * (entry.product.base_price + extrasCost);
 
-      // If combo is active on this dish
-      if (combo) {
-        const side = AVAILABLE_SIDES.find((s) => s.id === combo.sideId) || AVAILABLE_SIDES[0];
-        const drink = AVAILABLE_DRINKS.find((d) => d.id === combo.drinkId) || AVAILABLE_DRINKS[0];
+      // Add combo items for each configured combo
+      for (const c of combos) {
+        const side = AVAILABLE_SIDES.find((s) => s.id === c.sideId) || AVAILABLE_SIDES[0];
+        const drink = AVAILABLE_DRINKS.find((d) => d.id === c.drinkId) || AVAILABLE_DRINKS[0];
 
-        subtotal += entry.quantity * (side.basePrice + drink.basePrice);
-        comboDiscount += entry.quantity * 1.50; // $1.50 CAD per combo
+        subtotal += side.basePrice + drink.basePrice;
+        comboDiscount += 1.50; // $1.50 CAD discount per combo
       }
     }
 
@@ -348,10 +413,10 @@ export default function KioskPage() {
     for (const [prodId, entry] of cart.entries()) {
       consolidated.set(prodId, (consolidated.get(prodId) || 0) + entry.quantity);
 
-      const combo = combosByProduct.get(prodId);
-      if (combo) {
-        consolidated.set(combo.sideId, (consolidated.get(combo.sideId) || 0) + entry.quantity);
-        consolidated.set(combo.drinkId, (consolidated.get(combo.drinkId) || 0) + entry.quantity);
+      const combos = combosByProduct.get(prodId) || [];
+      for (const c of combos) {
+        consolidated.set(c.sideId, (consolidated.get(c.sideId) || 0) + 1);
+        consolidated.set(c.drinkId, (consolidated.get(c.drinkId) || 0) + 1);
       }
     }
 
@@ -458,7 +523,8 @@ export default function KioskPage() {
                 const cartEntry = cart.get(prod.id);
                 const quantity = cartEntry?.quantity || 0;
                 const isExpanded = expandedDescriptions.has(prod.id);
-                const hasComboAttached = combosByProduct.has(prod.id);
+                const currentCombos = combosByProduct.get(prod.id) || [];
+                const hasCombosAttached = currentCombos.length > 0;
 
                 return (
                   <div
@@ -498,9 +564,9 @@ export default function KioskPage() {
                           <h3 className="text-base font-bold text-white group-hover:text-amber-200 transition-colors leading-snug">
                             {prod.name}
                           </h3>
-                          {hasComboAttached && (
+                          {hasCombosAttached && (
                             <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 font-bold whitespace-nowrap">
-                              Combo
+                              {currentCombos.length}x Combo
                             </span>
                           )}
                         </div>
@@ -624,7 +690,7 @@ export default function KioskPage() {
                     </div>
                     <p className="text-[11px] text-neutral-400">
                       {mainsWithoutComboCount > 0
-                        ? `Abre el pedido para elegir bebida y acompañamiento para cada plato individual.`
+                        ? `Abre el pedido para elegir bebida y acompañamiento para cada hamburguesa, perro o salchipapa.`
                         : `Cada plato principal incluye su acompañamiento y bebida con descuento.`}
                     </p>
                   </div>
@@ -717,7 +783,7 @@ export default function KioskPage() {
         </div>
       )}
 
-      {/* Slide-over "Mi Pedido Actual" Drawer (Bundle Padre-Hijo) */}
+      {/* Slide-over "Mi Pedido Actual" Drawer (Bundle Padre-Hijo con Slots por Unidad) */}
       {isCartDrawerOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden">
           {/* Backdrop Blur */}
@@ -779,20 +845,12 @@ export default function KioskPage() {
                   </div>
                 ) : (
                   Array.from(cart.values()).map(({ product: prod, quantity }) => {
-                    const isMain = prod.category_id === 'burgers' || prod.category_id === 'dogs';
-                    const combo = isMain ? combosByProduct.get(prod.id) : null;
+                    const isMain = isMainDish(prod.category_id);
+                    const combos = isMain ? (combosByProduct.get(prod.id) || []) : [];
                     const mods = itemModifiers.get(prod.id) || { without: [], extras: [] };
                     const isCustomizing = customizingProductId === prod.id;
                     const availableExclusions =
                       EXCLUSIONS_BY_CATEGORY[prod.category_id] || EXCLUSIONS_BY_CATEGORY['default'];
-
-                    // Current chosen side and drink for this main dish combo
-                    const currentSide = combo
-                      ? AVAILABLE_SIDES.find((s) => s.id === combo.sideId) || AVAILABLE_SIDES[0]
-                      : AVAILABLE_SIDES[0];
-                    const currentDrink = combo
-                      ? AVAILABLE_DRINKS.find((d) => d.id === combo.drinkId) || AVAILABLE_DRINKS[0]
-                      : AVAILABLE_DRINKS[0];
 
                     return (
                       <div
@@ -899,163 +957,224 @@ export default function KioskPage() {
                             <button
                               onClick={() => deleteFromCart(prod.id)}
                               className="w-7 h-7 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center text-xs transition-all border border-red-500/20"
-                              title="Eliminar este plato y su combo"
+                              title="Eliminar este plato y sus combos"
                             >
                               🗑️
                             </button>
                           </div>
                         </div>
 
-                        {/* Combo Criollo Bundle Section (Only for Mains) */}
+                        {/* Combo Criollo Bundle Section (Burgers, Dogs, and Salchipapas) */}
                         {isMain && (
-                          <div className="pt-2 border-t border-white/[0.04]">
-                            {!combo ? (
+                          <div className="pt-2 border-t border-white/[0.04] space-y-2.5">
+                            {combos.length === 0 ? (
                               <button
                                 type="button"
-                                onClick={() => toggleComboForMain(prod.id)}
+                                onClick={() => addComboToProduct(prod.id)}
                                 className="w-full py-2 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center justify-between transition-all group"
                               >
                                 <span className="flex items-center gap-2">
                                   <span>🍟🥤</span>
-                                  <span>¿Volver Combo Criollo para este plato?</span>
+                                  <span>
+                                    {quantity > 1
+                                      ? `¿Armar Combo Criollo para este plato?`
+                                      : `¿Volver Combo Criollo para este plato?`}
+                                  </span>
                                 </span>
                                 <span className="font-mono text-[11px] bg-amber-500/20 px-2 py-0.5 rounded-full text-amber-200 group-hover:bg-amber-500 group-hover:text-black transition-colors">
-                                  +$7.50 CAD
+                                  +$7.50 CAD c/u
                                 </span>
                               </button>
                             ) : (
-                              <div className="bg-[#0f0f14] border border-emerald-500/30 rounded-xl p-3 space-y-2.5">
+                              <div className="bg-[#0f0f14] border border-emerald-500/30 rounded-xl p-3 space-y-3">
+                                {/* Header with Status and Multi-replicate */}
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-2">
                                     <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                                      <span className="text-emerald-400">✓</span> Combo Criollo Asignado
+                                      <span className="text-emerald-400">✓</span>{' '}
+                                      {quantity > 1
+                                        ? `${combos.length} de ${quantity} platos con Combo Criollo`
+                                        : 'Combo Criollo Asignado'}
                                     </span>
                                     <span className="text-[10px] font-mono text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
-                                      -$1.50 CAD Ahorro
+                                      -${(combos.length * 1.50).toFixed(2)} CAD Ahorro
                                     </span>
                                   </div>
+
+                                  {quantity > 1 && combos.length < quantity && (
+                                    <button
+                                      type="button"
+                                      onClick={() => replicateComboToAll(prod.id)}
+                                      className="text-[10px] font-mono text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30 transition-all font-semibold flex items-center gap-1"
+                                    >
+                                      <span>⚡ Replicar a todos</span>
+                                    </button>
+                                  )}
+                                </div>
+
+                                {/* Individual Combo Slots per Unit */}
+                                <div className="space-y-2">
+                                  {combos.map((c, idx) => {
+                                    const currentSide =
+                                      AVAILABLE_SIDES.find((s) => s.id === c.sideId) || AVAILABLE_SIDES[0];
+                                    const currentDrink =
+                                      AVAILABLE_DRINKS.find((d) => d.id === c.drinkId) || AVAILABLE_DRINKS[0];
+
+                                    return (
+                                      <div
+                                        key={idx}
+                                        className="bg-[#14141c] border border-white/[0.08] rounded-xl p-2.5 space-y-2"
+                                      >
+                                        <div className="flex items-center justify-between text-xs">
+                                          <span className="font-mono text-[11px] text-amber-300 font-bold">
+                                            {quantity > 1 ? `Plato #${idx + 1}:` : 'Componentes del Combo:'}
+                                          </span>
+                                          <button
+                                            type="button"
+                                            onClick={() => removeComboFromProduct(prod.id, idx)}
+                                            className="text-[10px] font-mono text-red-400/80 hover:text-red-300 underline"
+                                          >
+                                            Quitar combo
+                                          </button>
+                                        </div>
+
+                                        {/* Side Choice */}
+                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-white/[0.04]">
+                                          <span className="text-neutral-400 font-mono text-[10px] flex items-center gap-1.5">
+                                            <span>🍟</span> Acompañamiento:
+                                          </span>
+                                          <div className="relative">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                setOpenSwapPicker(
+                                                  openSwapPicker?.productId === prod.id &&
+                                                    openSwapPicker.comboIndex === idx &&
+                                                    openSwapPicker.type === 'side'
+                                                    ? null
+                                                    : { productId: prod.id, comboIndex: idx, type: 'side' }
+                                                )
+                                              }
+                                              className="text-[11px] font-medium text-white hover:text-amber-300 flex items-center gap-1.5 bg-[#1a1a24] hover:bg-[#222230] px-2.5 py-1 rounded-lg border border-white/[0.08] transition-all"
+                                            >
+                                              <span>{currentSide.name}</span>
+                                              {currentSide.delta > 0 && (
+                                                <span className="text-amber-400 font-mono text-[10px]">
+                                                  (+${currentSide.delta.toFixed(2)})
+                                                </span>
+                                              )}
+                                              <span className="text-[9px] text-neutral-400">▾</span>
+                                            </button>
+
+                                            {/* Swap Picker for Side */}
+                                            {openSwapPicker?.productId === prod.id &&
+                                              openSwapPicker.comboIndex === idx &&
+                                              openSwapPicker.type === 'side' && (
+                                                <div className="absolute right-0 top-full mt-1.5 z-40 w-60 bg-[#16161e] border border-amber-500/40 rounded-xl p-1.5 shadow-2xl space-y-1">
+                                                  <div className="px-2 py-1 text-[10px] font-mono text-neutral-400 uppercase tracking-wider border-b border-white/[0.06]">
+                                                    Elige acompañamiento:
+                                                  </div>
+                                                  {AVAILABLE_SIDES.map((s) => (
+                                                    <button
+                                                      key={s.id}
+                                                      type="button"
+                                                      onClick={() => {
+                                                        updateComboSide(prod.id, idx, s.id);
+                                                        setOpenSwapPicker(null);
+                                                      }}
+                                                      className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors ${
+                                                        currentSide.id === s.id
+                                                          ? 'bg-amber-500 text-black font-bold'
+                                                          : 'text-neutral-300 hover:bg-white/[0.08]'
+                                                      }`}
+                                                    >
+                                                      <span>{s.icon} {s.name}</span>
+                                                      <span className="font-mono text-[10px]">
+                                                        {s.delta > 0 ? `+$${s.delta.toFixed(2)} CAD` : 'Incluido'}
+                                                      </span>
+                                                    </button>
+                                                  ))}
+                                                </div>
+                                              )}
+                                          </div>
+                                        </div>
+
+                                        {/* Drink Choice */}
+                                        <div className="flex items-center justify-between text-xs pt-1 border-t border-white/[0.04]">
+                                          <span className="text-neutral-400 font-mono text-[10px] flex items-center gap-1.5">
+                                            <span>🥤</span> Bebida:
+                                          </span>
+                                          <div className="relative">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                setOpenSwapPicker(
+                                                  openSwapPicker?.productId === prod.id &&
+                                                    openSwapPicker.comboIndex === idx &&
+                                                    openSwapPicker.type === 'drink'
+                                                    ? null
+                                                    : { productId: prod.id, comboIndex: idx, type: 'drink' }
+                                                )
+                                              }
+                                              className="text-[11px] font-medium text-white hover:text-amber-300 flex items-center gap-1.5 bg-[#1a1a24] hover:bg-[#222230] px-2.5 py-1 rounded-lg border border-white/[0.08] transition-all"
+                                            >
+                                              <span>{currentDrink.name}</span>
+                                              {currentDrink.delta > 0 && (
+                                                <span className="text-amber-400 font-mono text-[10px]">
+                                                  (+${currentDrink.delta.toFixed(2)})
+                                                </span>
+                                              )}
+                                              <span className="text-[9px] text-neutral-400">▾</span>
+                                            </button>
+
+                                            {/* Swap Picker for Drink */}
+                                            {openSwapPicker?.productId === prod.id &&
+                                              openSwapPicker.comboIndex === idx &&
+                                              openSwapPicker.type === 'drink' && (
+                                                <div className="absolute right-0 top-full mt-1.5 z-40 w-64 bg-[#16161e] border border-amber-500/40 rounded-xl p-1.5 shadow-2xl space-y-1">
+                                                  <div className="px-2 py-1 text-[10px] font-mono text-neutral-400 uppercase tracking-wider border-b border-white/[0.06]">
+                                                    Elige bebida:
+                                                  </div>
+                                                  {AVAILABLE_DRINKS.map((d) => (
+                                                    <button
+                                                      key={d.id}
+                                                      type="button"
+                                                      onClick={() => {
+                                                        updateComboDrink(prod.id, idx, d.id);
+                                                        setOpenSwapPicker(null);
+                                                      }}
+                                                      className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors ${
+                                                        currentDrink.id === d.id
+                                                          ? 'bg-amber-500 text-black font-bold'
+                                                          : 'text-neutral-300 hover:bg-white/[0.08]'
+                                                      }`}
+                                                    >
+                                                      <span>{d.icon} {d.name}</span>
+                                                      <span className="font-mono text-[10px]">
+                                                        {d.delta > 0 ? `+$${d.delta.toFixed(2)} CAD` : 'Incluido'}
+                                                      </span>
+                                                    </button>
+                                                  ))}
+                                                </div>
+                                              )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* Button to add combo for next unit if partially armed */}
+                                {combos.length < quantity && (
                                   <button
                                     type="button"
-                                    onClick={() => toggleComboForMain(prod.id)}
-                                    className="text-[10px] font-mono text-red-400/80 hover:text-red-300 underline"
+                                    onClick={() => addComboToProduct(prod.id)}
+                                    className="w-full py-2 px-3 rounded-xl border border-dashed border-amber-500/40 hover:border-amber-500/80 hover:bg-amber-500/[0.04] text-amber-300 text-xs font-mono font-medium flex items-center justify-center gap-2 transition-all"
                                   >
-                                    Quitar combo
+                                    <span>+ Armar Combo para Plato #{combos.length + 1}</span>
+                                    <span className="text-[11px] opacity-80">(+$7.50 CAD)</span>
                                   </button>
-                                </div>
-
-                                {/* Side Choice with Swap Dropdown */}
-                                <div className="flex items-center justify-between text-xs pt-1 border-t border-white/[0.04]">
-                                  <span className="text-neutral-400 font-mono text-[11px] flex items-center gap-1.5">
-                                    <span>🍟</span> Acompañamiento:
-                                  </span>
-                                  <div className="relative">
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setOpenSwapPicker(
-                                          openSwapPicker?.productId === prod.id && openSwapPicker.type === 'side'
-                                            ? null
-                                            : { productId: prod.id, type: 'side' }
-                                        )
-                                      }
-                                      className="text-[11px] font-medium text-white hover:text-amber-300 flex items-center gap-1.5 bg-[#181820] hover:bg-[#20202a] px-2.5 py-1.5 rounded-lg border border-white/[0.08] transition-all"
-                                    >
-                                      <span>{currentSide.name}</span>
-                                      {currentSide.delta > 0 && (
-                                        <span className="text-amber-400 font-mono text-[10px]">
-                                          (+${currentSide.delta.toFixed(2)})
-                                        </span>
-                                      )}
-                                      <span className="text-[9px] text-neutral-400">▾</span>
-                                    </button>
-
-                                    {/* Swap Picker for Sides */}
-                                    {openSwapPicker?.productId === prod.id && openSwapPicker.type === 'side' && (
-                                      <div className="absolute right-0 top-full mt-1.5 z-40 w-60 bg-[#16161e] border border-amber-500/40 rounded-xl p-1.5 shadow-2xl space-y-1">
-                                        <div className="px-2 py-1 text-[10px] font-mono text-neutral-400 uppercase tracking-wider border-b border-white/[0.06]">
-                                          Elige acompañamiento:
-                                        </div>
-                                        {AVAILABLE_SIDES.map((s) => (
-                                          <button
-                                            key={s.id}
-                                            type="button"
-                                            onClick={() => {
-                                              updateComboSide(prod.id, s.id);
-                                              setOpenSwapPicker(null);
-                                            }}
-                                            className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors ${
-                                              currentSide.id === s.id
-                                                ? 'bg-amber-500 text-black font-bold'
-                                                : 'text-neutral-300 hover:bg-white/[0.08]'
-                                            }`}
-                                          >
-                                            <span>{s.icon} {s.name}</span>
-                                            <span className="font-mono text-[10px]">
-                                              {s.delta > 0 ? `+$${s.delta.toFixed(2)} CAD` : 'Incluido'}
-                                            </span>
-                                          </button>
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {/* Drink Choice with Swap Dropdown */}
-                                <div className="flex items-center justify-between text-xs pt-1 border-t border-white/[0.04]">
-                                  <span className="text-neutral-400 font-mono text-[11px] flex items-center gap-1.5">
-                                    <span>🥤</span> Bebida:
-                                  </span>
-                                  <div className="relative">
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setOpenSwapPicker(
-                                          openSwapPicker?.productId === prod.id && openSwapPicker.type === 'drink'
-                                            ? null
-                                            : { productId: prod.id, type: 'drink' }
-                                        )
-                                      }
-                                      className="text-[11px] font-medium text-white hover:text-amber-300 flex items-center gap-1.5 bg-[#181820] hover:bg-[#20202a] px-2.5 py-1.5 rounded-lg border border-white/[0.08] transition-all"
-                                    >
-                                      <span>{currentDrink.name}</span>
-                                      {currentDrink.delta > 0 && (
-                                        <span className="text-amber-400 font-mono text-[10px]">
-                                          (+${currentDrink.delta.toFixed(2)})
-                                        </span>
-                                      )}
-                                      <span className="text-[9px] text-neutral-400">▾</span>
-                                    </button>
-
-                                    {/* Swap Picker for Drinks */}
-                                    {openSwapPicker?.productId === prod.id && openSwapPicker.type === 'drink' && (
-                                      <div className="absolute right-0 top-full mt-1.5 z-40 w-64 bg-[#16161e] border border-amber-500/40 rounded-xl p-1.5 shadow-2xl space-y-1">
-                                        <div className="px-2 py-1 text-[10px] font-mono text-neutral-400 uppercase tracking-wider border-b border-white/[0.06]">
-                                          Elige bebida:
-                                        </div>
-                                        {AVAILABLE_DRINKS.map((d) => (
-                                          <button
-                                            key={d.id}
-                                            type="button"
-                                            onClick={() => {
-                                              updateComboDrink(prod.id, d.id);
-                                              setOpenSwapPicker(null);
-                                            }}
-                                            className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors ${
-                                              currentDrink.id === d.id
-                                                ? 'bg-amber-500 text-black font-bold'
-                                                : 'text-neutral-300 hover:bg-white/[0.08]'
-                                            }`}
-                                          >
-                                            <span>{d.icon} {d.name}</span>
-                                            <span className="font-mono text-[10px]">
-                                              {d.delta > 0 ? `+$${d.delta.toFixed(2)} CAD` : 'Incluido'}
-                                            </span>
-                                          </button>
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
+                                )}
                               </div>
                             )}
                           </div>

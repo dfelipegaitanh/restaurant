@@ -200,7 +200,7 @@ export async function createOrderAtomic(params: CreateOrderParams): Promise<Crea
   }
 
   // 3b. Calculate multi-combo discount server-side ($1.50 CAD per complete combo)
-  // 1 main dish (burger or dog) + 1 side (sides category) + 1 drink (drinks category) = 1 combo
+  // 1 main dish (burger, dog or salchipapa) + 1 side (sides category) + 1 drink (drinks category) = 1 combo
   let totalMains = 0;
   let sidesCount = 0;
   let drinksCount = 0;
@@ -208,7 +208,7 @@ export async function createOrderAtomic(params: CreateOrderParams): Promise<Crea
   for (const item of params.items) {
     const prod = productMap.get(item.product_id);
     if (prod) {
-      if (prod.category_id === 'burgers' || prod.category_id === 'dogs') {
+      if (prod.category_id === 'burgers' || prod.category_id === 'dogs' || prod.category_id === 'salchipapas') {
         totalMains += item.quantity;
       } else if (prod.category_id === 'sides') {
         sidesCount += item.quantity;
