@@ -19,6 +19,18 @@ npm run dev
 
 This workspace includes specialized AI agent roles, automated audit rules, and a multi-agent orchestration log under `.agents/`.
 
+### How the Agents Work Together
+
+```mermaid
+flowchart LR
+    U["User Request"] --> D["db-architect"]
+    D -- "PostgreSQL / PGlite DDL + types/domain.ts" --> T["tablet-ui"]
+    T -- "/kiosk UI + UUID idempotency_key + POST /api/orders" --> K["kds-engineer"]
+    K -- "/kitchen SSE Kanban + Wake Lock + Web Audio" --> R["reliability-tester"]
+    R -- "Double-submit & Wi-Fi Drop Verification" --> A["auditor_arquitectura"]
+    A -- "Modularity & Kiosk -> DB -> Kitchen Coherence Audit" --> U
+```
+
 ### 1. Core Domain Roles (`.agents/roles/`)
 
 - **`db-architect`** ([`db-architect.md`](.agents/roles/db-architect.md))  
