@@ -222,7 +222,7 @@ export default function KioskPage() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/cocina"
+            href="/kitchen"
             className="text-xs font-mono text-neutral-400 hover:text-amber-300 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] transition-all"
           >
             Ver Cocina KDS →

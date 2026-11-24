@@ -84,7 +84,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Kiosk Card */}
           <Link
-            href="/kiosko"
+            href="/kiosk"
             className="group relative p-8 rounded-2xl bg-gradient-to-b from-amber-500/[0.08] to-transparent border border-amber-500/20 hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between shadow-2xl overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-44 h-44 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-colors pointer-events-none" />
@@ -98,7 +98,7 @@ export default function HomePage() {
                   Terminal de Entrada
                 </span>
                 <h2 className="text-2xl font-serif font-medium text-white group-hover:text-amber-200 transition-colors">
-                  Kiosko de Autoservicio (/kiosko)
+                  Kiosko de Autoservicio (/kiosk)
                 </h2>
                 <p className="text-xs md:text-sm text-neutral-400 leading-relaxed font-light">
                   Catálogo táctil con las 6 categorías: Hamburguesas criollas, perros calientes, salchipapas, acompañamientos y bebidas en CAD. Tap directo para añadir y generación instantánea de ticket de turno.
@@ -116,7 +116,7 @@ export default function HomePage() {
 
           {/* KDS Card */}
           <Link
-            href="/cocina"
+            href="/kitchen"
             className="group relative p-8 rounded-2xl bg-gradient-to-b from-white/[0.04] to-transparent border border-white/[0.08] hover:border-amber-500/40 transition-all duration-300 flex flex-col justify-between shadow-2xl overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-colors pointer-events-none" />
@@ -130,7 +130,7 @@ export default function HomePage() {
                   Estación de Despacho
                 </span>
                 <h2 className="text-2xl font-serif font-medium text-white group-hover:text-amber-200 transition-colors">
-                  Pantalla de Cocina (/cocina)
+                  Pantalla de Cocina (/kitchen)
                 </h2>
                 <p className="text-xs md:text-sm text-neutral-400 leading-relaxed font-light">
                   Tablero Kanban conectado por SSE. Timbre de audio sintetizado con Web Audio API en cada nuevo pedido, semáforo de tiempos por ticket y avance de estado con un clic.

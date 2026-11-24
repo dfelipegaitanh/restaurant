@@ -206,7 +206,7 @@ export default function KitchenPage() {
           </div>
 
           <Link
-            href="/kiosko"
+            href="/kiosk"
             className="text-xs font-mono text-neutral-400 hover:text-white px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] transition-all"
           >
             Abrir Kiosko →

@@ -2,8 +2,8 @@
 
 A full-stack fast-casual restaurant prototype built with **Next.js 15 (App Router)**, **TypeScript**, **Tailwind CSS**, and **PostgreSQL** (embedded WASM via `@electric-sql/pglite` locally, or standard `pg` pool via `DATABASE_URL`).
 
-- **Self-Ordering Kiosk (`/kiosko`)**: Touch-first menu catalog, per-unit combo bundling with side/drink swaps, ingredient customizations, and idempotent order submission (CAD pricing).
-- **Kitchen Display System (`/cocina`)**: Real-time Kanban board fed by Server-Sent Events (`/api/realtime`), synthetic Web Audio API alerts, Screen Wake Lock, and elapsed-time color indicators.
+- **Self-Ordering Kiosk (`/kiosk`)**: Touch-first menu catalog, per-unit combo bundling with side/drink swaps, ingredient customizations, and idempotent order submission (CAD pricing).
+- **Kitchen Display System (`/kitchen`)**: Real-time Kanban board fed by Server-Sent Events (`/api/realtime`), synthetic Web Audio API alerts, Screen Wake Lock, and elapsed-time color indicators.
 
 ### Quick Start
 
@@ -26,11 +26,11 @@ This workspace includes specialized AI agent roles, automated audit rules, and a
   **Technical Responsibilities:** Designs relational PostgreSQL/PGlite schemas, enforces `idempotency_key` (`UUID UNIQUE`) constraints to prevent duplicate orders during unstable Wi-Fi retries, manages order lifecycle states (`PENDING`, `IN_PREP`, `READY`, `SERVED`, `CANCELLED`), and keeps `types/domain.ts` synchronized with database tables.
 
 - **`tablet-ui`** ([`tablet-ui.md`](.agents/roles/tablet-ui.md))  
-  **Scope:** Customer-facing ordering interfaces (`/kiosko`, `/mesa/[id]`).  
+  **Scope:** Customer-facing ordering interfaces (`/kiosk`, `/mesa/[id]`).  
   **Technical Responsibilities:** Builds touch-ergonomic UIs (minimum `48px x 48px` hit targets), native HTML5 `<dialog>` / Popover API modals without heavy third-party modal libraries, client-side cart persistence (`localStorage` / `IndexedDB`), and client-generated UUID v4 idempotency tokens prior to `POST /api/orders` dispatch.
 
 - **`kds-engineer`** ([`kds-engineer.md`](.agents/roles/kds-engineer.md))  
-  **Scope:** Real-time Kitchen Display System (`/cocina`).  
+  **Scope:** Real-time Kitchen Display System (`/kitchen`).  
   **Technical Responsibilities:** Implements low-latency order boards over SSE (`/api/realtime`), integrates the **Screen Wake Lock API** to prevent tablet sleep during service, uses the **View Transitions API** for 60 FPS card transitions, synthesizes dual-tone notification chimes via the **Web Audio API** (zero external audio files), and renders elapsed-time semáforo badges (`<10m` green, `10–20m` orange, `>20m` red).
 
 - **`reliability-tester`** ([`reliability-tester.md`](.agents/roles/reliability-tester.md))  
